@@ -1,3 +1,27 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) <2014> <Sindre Smistad>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 #include "plstr.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +58,19 @@ void assert_equal_str(char *x, char *y, char *func_name, char *msg) {
         printf("%s[FAILED] %s: %s\n", KRED, func_name, msg);
         printf("%sGot: %s\n", KWHT, y);
         printf("Expected: %s\n", x);
+    }
+}
+
+
+void assert_equal_int(int x, int y, char * func_name, char *msg) {
+    if(x == y ) {
+        printf("%s[PASSED] %s: passed\n", KGRN, func_name);
+    }
+
+    else {
+        printf("%s[FAILED] %s: %s\n", KRED, func_name, msg);
+        printf("%sGot: %d\n", KWHT, y);
+        printf("Expected: %d\n", x);
     }
 }
 
@@ -321,6 +358,156 @@ void test_strcat_empty_destination() {
 }
 
 
+void test_split() {
+    int size = 0;
+    char the_string[] = "fooasdbar";
+    char **ret_val;
+
+    ret_val = pl_split(the_string, "asd", &size);
+
+    assert_equal_str(
+                "foo",
+                ret_val[0],
+                "test_split",
+                "Test 1: The strings are not equal."
+            );
+
+    assert_equal_str(
+                "bar",
+                ret_val[1],
+                "test_split",
+                "Test 2: The strings are not equal."
+            );
+
+    assert_equal_int(
+                2,
+                size,
+                "test_split",
+                "Test 3: Size is not correct."
+            );
+}
+
+
+void test_split_multiple_delims() {
+    int size = 0;
+    char the_string[] = "fooasdbarasdmagic";
+    char **ret_val;
+
+    ret_val = pl_split(the_string, "asd", &size);
+
+    assert_equal_str(
+                "foo",
+                ret_val[0],
+                "test_split_multiple_delims",
+                "Test 1: Strings are not equal."
+            );
+
+    assert_equal_str(
+                "bar",
+                ret_val[1],
+                "test_split_multiple_delims",
+                "Test 2: Strings are not equal."
+            );
+
+    assert_equal_str(
+                "magic",
+                ret_val[2],
+                "test_split_multiple_delims",
+                "Test 3: Strings are not equal"
+            );
+
+    assert_equal_int(
+                3,
+                size,
+                "test_split_multiple_delims",
+                "Test 4: Size is not correct."
+            );
+}
+
+
+void test_split_delim_not_found() {
+    int size = 0;
+    char the_string[] = "fooasdbarasdmagic";
+    char **ret_val;
+
+    ret_val = pl_split(the_string, "x", &size);
+
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_delim_not_found",
+                "Test 1: NULL not returned."
+            );
+
+    assert_equal_int(
+                0,
+                size,
+                "test_split_delim_not_found",
+                "Test 2: Size is not correct."
+            );
+}
+
+
+void test_split_empty_delim() {
+    int size = 0;
+    char the_string[] = "fooasdbarasdmagic";
+    char **ret_val;
+
+    ret_val = pl_split(the_string, "", &size);
+
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_empty_delim",
+                "Test 1: NULL not returned."
+            );
+
+    assert_equal_int(
+                0,
+                size,
+                "test_split_empty_delim",
+                "Test 2: Size is not right."
+            );
+}
+
+
+void test_split_single_delim() {
+    int size = 0;
+    char the_string[] = "abc def ghi";
+    char **ret_val;
+
+    ret_val = pl_split(the_string, " ", &size);
+
+    assert_equal_str(
+                "abc",
+                ret_val[0],
+                "test_split_single_delim",
+                "Test 1: Strings not equal."
+            );
+
+    assert_equal_str(
+                "def",
+                ret_val[1],
+                "test_split_single_delim",
+                "Test 2: Strings not equal."
+            );
+
+    assert_equal_str(
+                "ghi",
+                ret_val[2],
+                "test_split_single_delim",
+                "Test 3: Strings not equal."
+            );
+
+    assert_equal_int(
+                3,
+                size,
+                "test_split_single_delim",
+                "Test 4: Size of the returned array is not right."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -336,6 +523,11 @@ int main () {
     test_strcat();
     test_strcat_empty_source();
     test_strcat_empty_destination();
+    test_split();
+    test_split_multiple_delims();
+    test_split_delim_not_found();
+    test_split_empty_delim();
+    test_split_single_delim();
 
     return 0;
 }

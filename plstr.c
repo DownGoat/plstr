@@ -1,3 +1,36 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) <2014> <Sindre Smistad>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+/**
+ * @file plstr.c
+ *
+ * @brief asd
+ *
+ * @author Sindre Smistad <sindre@downgoat.net>
+ *
+ * @date 2014.10.25
+ */
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -147,6 +180,98 @@ char *pl_cat(char *destination, char *source) {
     return ret_val;
 
 error_exit:
+    free(tmp);
+
+    return ret_val;
+}
+
+
+/**
+ * @breif This function splits the string using a delimiter, and puts the
+ * results in array of strings. The function differs from the behaviour of
+ * strtok, if the delimiter is longer than a single character it splits the
+ * string where where the delimeter is found. If the string is
+ * "fooasdbarasdmagic" and the delimiter is "asd" the result will be
+ * ["foo", "bar", "magic"]. If the delimter is not found, or it is empty string
+ * NULL is returned instead. The orignal string is not modified.
+ *
+ * @param string The string you want to split up.
+ *
+ * @param delim The delimiter you want to use.
+ *
+ * @param size This will be set to the size of the returned array.
+ *
+ * @return Returns a array of strings whith the different sub strings if
+ * successful. The size argument is set to the size of the returned array.
+ * If the function fails NULL is returned.
+ */
+char **pl_split(char *string, char *delim, int *size) {
+    char **ret_val = NULL, **tmp = NULL, *pch = string, *offset;
+    int i = 0, delims = 0;
+
+    if (strlen(delim) == 0) {
+        return NULL;
+    }
+
+    // Count the number of occurences of the sub str.
+    do {
+        pch = strstr(pch, delim);
+
+        if (pch != NULL) {
+            delims++;
+
+            pch = pch + strlen(delim);
+        }
+    } while (pch != NULL);
+
+    if (delims == 0) {
+        return NULL;
+    }
+
+    tmp = (char **) calloc(delims + 1, sizeof(char));
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    pch = string;
+    offset = string;
+
+    for (i = 0; i < delims; i++) {
+        char *sub_str;
+
+        pch = strstr(pch, delim);
+
+        sub_str = (char *) calloc((pch - offset) + 1, sizeof(char));
+        if (sub_str == NULL) {
+            goto error_exit;
+        }
+
+        strncpy(sub_str, offset, pch - offset);
+
+        pch += strlen(delim);
+        offset = pch;
+        tmp[i] = sub_str;
+    }
+
+    pch = (char *) calloc(strlen(offset) + 1, sizeof(char));
+    if (pch == NULL) {
+        goto error_exit;
+    }
+
+    strncpy(pch, offset, strlen(offset));
+
+    tmp[i] = pch;
+    ret_val = tmp;
+
+    *size = i + 1;
+
+    return ret_val;
+
+error_exit:
+    for(i = 0; i < (delims + 1); i++) {
+        free(tmp[i]);
+    }
+
     free(tmp);
 
     return ret_val;
