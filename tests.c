@@ -39,7 +39,7 @@ void assert_equal_str(char *x, char *y, char *func_name, char *msg) {
     if (x == NULL && y == NULL) {
         printf("%s[PASSED] %s: passed\n", KGRN, func_name);
 
-        return;
+        goto exit;
     }
 
     if (x == NULL || y == NULL) {
@@ -47,7 +47,7 @@ void assert_equal_str(char *x, char *y, char *func_name, char *msg) {
         printf("%sGot: %s\n", KWHT, y);
         printf("Expected: %s\n", x);
 
-        return;
+        goto exit;
     }
 
     else if (!strcmp(x, y)) {
@@ -59,6 +59,9 @@ void assert_equal_str(char *x, char *y, char *func_name, char *msg) {
         printf("%sGot: %s\n", KWHT, y);
         printf("Expected: %s\n", x);
     }
+
+exit:
+    printf("%s", KWHT);
 }
 
 
@@ -72,6 +75,8 @@ void assert_equal_int(int x, int y, char * func_name, char *msg) {
         printf("%sGot: %d\n", KWHT, y);
         printf("Expected: %d\n", x);
     }
+
+    printf("%s", KWHT);
 }
 
 
@@ -508,6 +513,108 @@ void test_split_single_delim() {
 }
 
 
+void test_startswith() {
+    char the_string[] = "http://google.com";
+
+    int ret_val = pl_startswith(the_string, "http://");
+
+    assert_equal_int(
+                1,
+                ret_val,
+                "test_startswith",
+                "Test 1: The string does not start with http://"
+            );
+
+    ret_val = pl_startswith(the_string, "https://");
+
+    assert_equal_int(
+                0,
+                ret_val,
+                "test_startswith",
+                "Test 2: The string starts with https://"
+            );
+}
+
+
+void test_startwith_empy_string() {
+    char the_string[] = "";
+
+    int ret_val = pl_startswith(the_string, "asd");
+
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_startwith_empy_string",
+                "The function did not return the correct error value."
+            );
+}
+
+
+void test_startwith_empy_prefix() {
+    char the_string[] = "http://bing.com";
+
+    int ret_val = pl_startswith(the_string, "");
+
+    assert_equal_int(
+            -1,
+            ret_val,
+            "test_startwith_empy_prefix",
+            "The function did not return the correct error value."
+        );
+}
+
+
+void test_endswith() {
+    char the_string[] = "http://yahoo.com";
+
+    int ret_val = pl_endswith(the_string, ".com");
+
+    assert_equal_int(
+                1,
+                ret_val,
+                "test_endswith",
+                "Test 1: The strings does not end with .com"
+            );
+
+    ret_val = pl_endswith(the_string, ".net");
+
+    assert_equal_int(
+                0,
+                ret_val,
+                "test_endswith",
+                "Test 2: The string does end with .net"
+            );
+}
+
+
+void test_endswith_empty_string() {
+    char the_string[] = "";
+
+    int ret_val = pl_endswith(the_string, "asd");
+
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_endswith_empty_string",
+                "Error code not returned."
+            );
+}
+
+
+void test_endswith_empty_postfix() {
+    char the_string[] = "http://duckduckgo.com";
+
+    int ret_val = pl_endswith(the_string, "");
+
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_endswith_empty_postfix",
+                "Error code not returned."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -528,6 +635,12 @@ int main () {
     test_split_delim_not_found();
     test_split_empty_delim();
     test_split_single_delim();
+    test_startswith();
+    test_startwith_empy_string();
+    test_startwith_empy_prefix();
+    test_endswith();
+    test_endswith_empty_string();
+    test_endswith_empty_postfix();
 
     return 0;
 }

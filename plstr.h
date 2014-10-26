@@ -41,4 +41,8 @@ char *pl_cat(char *destination, char *source);
 
 char **pl_split(char *string, char *delim, int *size);
 
+int pl_startswith(char *string, char *prefix);
+
+int pl_endswith(char *string, char *postfix);
+
 #endif /* PLSTR_H */

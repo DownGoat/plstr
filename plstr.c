@@ -161,7 +161,7 @@ error_exit:
  * If the function fails NULL is returned.
  */
 char *pl_cat(char *destination, char *source) {
-    char *ret_val = NULL, *tmp;
+    char *ret_val = NULL, *tmp = NULL;
 
     tmp = (char *) calloc(strlen(source) + strlen(destination) + 1, sizeof(char));
     if (tmp == NULL) {
@@ -206,7 +206,7 @@ error_exit:
  * If the function fails NULL is returned.
  */
 char **pl_split(char *string, char *delim, int *size) {
-    char **ret_val = NULL, **tmp = NULL, *pch = string, *offset;
+    char **ret_val = NULL, **tmp = NULL, *pch = string, *offset = string;
     int i = 0, delims = 0;
 
     if (strlen(delim) == 0) {
@@ -237,7 +237,7 @@ char **pl_split(char *string, char *delim, int *size) {
     offset = string;
 
     for (i = 0; i < delims; i++) {
-        char *sub_str;
+        char *sub_str = NULL;
 
         pch = strstr(pch, delim);
 
@@ -273,6 +273,88 @@ error_exit:
     }
 
     free(tmp);
+
+    return ret_val;
+}
+
+
+/**
+ * @brief Checks if the string starts with a prefix. Does not modify the string.
+ *
+ * @param string The string you want to check.
+ *
+ * @param prefix The substring you want to check if the string starts with.
+ *
+ * @return Returns 1 if the string starts with the prefix, returns 0 if it does
+ * not. If the function fails -1 is returned.
+ */
+int pl_startswith(char *string, char *prefix) {
+    char *tmp = NULL;
+    int ret_val = -1;
+
+    if (strlen(string) == 0 || strlen(prefix) == 0) {
+        goto error_exit;
+    }
+
+    tmp = (char *) calloc(strlen(prefix) + 1, sizeof(char));
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    tmp = strncpy(tmp, string, strlen(prefix));
+
+    if (!strcmp(tmp, prefix)) {
+        ret_val = 1;
+    }
+
+    else {
+        ret_val = 0;
+    }
+
+    free(tmp);
+
+    return ret_val;
+
+error_exit:
+    free(tmp);
+
+    return ret_val;
+}
+
+
+/**
+ * @brief Checks if a strings ends with a postfix. The function does not alter
+ * the string.
+ *
+ * @param string The string you want to check if ends with the postfix.
+ *
+ * @param postfix The substring you want to check if the string ends with.
+ *
+ * @return The function returns 1 if the string ends with the postfix. If the
+ * string does not end with the postfix 0 is returned. If the function fails
+ * -1 is returned.
+ */
+int pl_endswith(char *string, char *postfix) {
+    char *pch = NULL;
+    int ret_val = -1;
+
+    if (strlen(string) == 0 || strlen(postfix) == 0) {
+        goto error_exit;
+    }
+
+    pch = string + strlen(string) - strlen(postfix);
+
+    if (!strcmp(pch, postfix)) {
+        ret_val = 1;
+    }
+
+    else {
+        ret_val = 0;
+    }
+
+    return ret_val;
+
+error_exit:
 
     return ret_val;
 }
