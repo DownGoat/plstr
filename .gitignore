@@ -1,4 +1,4 @@
 *.o
 plstr
-.gdb_history/
+.gdb_history
 peda-session-plstr.txt
