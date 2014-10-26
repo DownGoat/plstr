@@ -224,6 +224,103 @@ void test_slice_offset_oor() {
 }
 
 
+void test_strcpy_no_alloc() {
+    char the_string[] = "spam, eggs, and ham";
+    char *ret_val;
+
+    ret_val = pl_cpy(the_string, NULL);
+
+    assert_equal_str(
+                "spam, eggs, and ham",
+                ret_val,
+                "test_strcpy_no_alloc",
+                "The strings are not equal."
+            );
+}
+
+
+void test_strcpy_pre_alloc() {
+    char the_string[] = "spam, eggs, and ham";
+    char *ret_val;
+
+    ret_val = (char *) calloc(strlen(the_string) + 1, sizeof(char));
+
+    ret_val = pl_cpy(the_string, ret_val);
+
+    assert_equal_str(
+                "spam, eggs, and ham",
+                ret_val,
+                "test_strcpy_pre_alloc",
+                "The strings are not equal."
+            );
+}
+
+
+void test_strcpy_not_empty() {
+    char the_string[] = "spam, eggs, and ham";
+    char *ret_val, tmp[100];
+
+    strcpy(tmp, "foobar");
+
+    ret_val = pl_cpy(the_string, NULL);
+
+    assert_equal_str(
+                "spam, eggs, and ham",
+                ret_val,
+                "test_strcpy_not_empty",
+                "The strings are not equal"
+            );
+}
+
+
+void test_strcat() {
+    char foo[] = "foo";
+    char bar[] = "bar";
+    char *ret_val;
+
+    ret_val = pl_cat(foo, bar);
+
+    assert_equal_str(
+                "foobar",
+                ret_val,
+                "test_strcat",
+                "The strings are not equal."
+            );
+}
+
+
+void test_strcat_empty_source() {
+    char empty[5] = {0};
+    char bar[] = "bar";
+    char *ret_val;
+
+    ret_val = pl_cat(empty, bar);
+
+    assert_equal_str(
+                "bar",
+                ret_val,
+                "test_strcat_empty_source",
+                "The strings are not equal."
+            );
+}
+
+
+void test_strcat_empty_destination() {
+    char empty[5] = {0};
+    char foo[] = "foo";
+    char *ret_val;
+
+    ret_val = pl_cat(foo, empty);
+
+    assert_equal_str(
+                "foo",
+                ret_val,
+                "test_strcat_empty_destination",
+                "The strings are not equal."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -233,6 +330,12 @@ int main () {
     test_slice_both_negative();
     test_slice_limit_oor();
     test_slice_offset_oor();
+    test_strcpy_no_alloc();
+    test_strcpy_pre_alloc();
+    test_strcpy_not_empty();
+    test_strcat();
+    test_strcat_empty_source();
+    test_strcat_empty_destination();
 
     return 0;
 }

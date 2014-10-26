@@ -3,26 +3,36 @@
 
 
 /**
- *  @brief This is a wrapper around the standard strcpy function, it checks if
- *  the size of source string is less or equal to the destination string.
+ * @brief This function is a wrapper around strcpy, it copies a string into a
+ * buffer. If the destionation argument is NULL a new buffer is allocated,
+ * and if it is not NULL the string passed in source is copyed into the
+ * destionation buffer.
  *
- *  @param destination This is a pointer to the buffer the string will be copied
- *  into.
+ * @param source This is string you want to copy into the buffer.
  *
- *  @param source This is the pointer to the buffer containing the string you
- *  want to copy.
+ * @param destionation This is the optional destination buffer, if NULL is
+ * passed a new buffer is allocated and the source is copied into it. If it
+ * is not NULL the source will be copied into the destionation buffer.
  *
- *  @param dest_size This is the size of the destination buffer.
- *
- *  @return This function returns a NULL pointer if the source string is longer
- *  then the destination buffer.
+ * @return If successful a pointer to buffer is returned. If the function fails
+ * NULL is returned.
  */
-char *pl_strcpy(char *destination, char *source, size_t dest_size) {
-    char *ret_val = NULL;
+char *pl_cpy(char *source, char *destination) {
+    char *ret_val = NULL, *tmp = destination;
 
-    if (dest_size >= strlen(source)) {
-        ret_val = strcpy(destination, source);
+    if (destination == NULL) {
+        tmp = calloc(strlen(source) + 1, sizeof(char));
+        if (tmp == NULL) {
+            goto error_exit;
+        }
     }
+
+    ret_val = strcpy(tmp, source);
+
+    return ret_val;
+
+error_exit:
+    free(tmp);
 
     return ret_val;
 }
@@ -93,6 +103,44 @@ char *pl_slice(char *source, int offset, int limit) {
         tmp[tmp_count] = source[i];
         tmp_count++;
     }
+
+    ret_val = tmp;
+
+    return ret_val;
+
+error_exit:
+    free(tmp);
+
+    return ret_val;
+}
+
+
+/**
+ * @brief This function creates a new buffer that is the size of the two
+ * arguments, and both arguments are copied into it. The resulting string
+ * is destination+source.
+ *
+ * @param destination The first string you want to concatenation to.
+ *
+ * @param source The string you want concatenation destination with.
+ *
+ * @return Returns a pointer to the new buffer of the concatenation strings.
+ * If the function fails NULL is returned.
+ */
+char *pl_cat(char *destination, char *source) {
+    char *ret_val = NULL, *tmp;
+
+    tmp = (char *) calloc(strlen(source) + strlen(destination) + 1, sizeof(char));
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    tmp = pl_cpy(destination, tmp);
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    strcat(tmp, source);
 
     ret_val = tmp;
 

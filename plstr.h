@@ -9,9 +9,10 @@
  *****************************************************************/
 
 
-char *pl_strcpy(char *destination, char *source, size_t dest_size);
+char *pl_cpy(char *source, char *destination);
 
 char *pl_slice(char *source, int offset, int limit);
 
+char *pl_cat(char *destination, char *source);
 
 #endif /* PLSTR_H */
