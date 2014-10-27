@@ -45,4 +45,6 @@ int pl_startswith(char *string, char *prefix);
 
 int pl_endswith(char *string, char *postfix);
 
+char *pl_strip(char *string, char *chars);
+
 #endif /* PLSTR_H */

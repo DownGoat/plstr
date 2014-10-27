@@ -80,6 +80,21 @@ void assert_equal_int(int x, int y, char * func_name, char *msg) {
 }
 
 
+void assert_equal_pointers(void *x, void *y, char *func_name, char *msg) {
+    if(x == y ) {
+        printf("%s[PASSED] %s: passed\n", KGRN, func_name);
+    }
+
+    else {
+        printf("%s[FAILED] %s: %s\n", KRED, func_name, msg);
+        printf("%sGot: %p\n", KWHT, y);
+        printf("Expected: %p\n", x);
+    }
+
+    printf("%s", KWHT);
+}
+
+
 void test_slice_positive_sub_str() {
     char the_string[] = "spam, eggs, and ham";
     char *ret_val;
@@ -266,6 +281,27 @@ void test_slice_offset_oor() {
 }
 
 
+void test_slice_empty_string() {
+    char *ret_val;
+
+    ret_val = pl_slice("", 1, 3);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_slice_empty_string",
+                "Test 1: NULL not returned."
+            );
+
+    ret_val = pl_slice(NULL, 1, 3);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_slice_empty_string",
+                "Test 2: NULL not returned."
+            );
+}
+
+
 void test_strcpy_no_alloc() {
     char the_string[] = "spam, eggs, and ham";
     char *ret_val;
@@ -315,6 +351,19 @@ void test_strcpy_not_empty() {
 }
 
 
+void test_strcpy_empty_paras() {
+    char *ret_val;
+
+    ret_val = pl_cpy(NULL, NULL);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strcpy_empty_paras",
+                "Test 2: NULL not returned."
+            );
+}
+
+
 void test_strcat() {
     char foo[] = "foo";
     char bar[] = "bar";
@@ -359,6 +408,35 @@ void test_strcat_empty_destination() {
                 ret_val,
                 "test_strcat_empty_destination",
                 "The strings are not equal."
+            );
+}
+
+
+void test_strcat_empty_params() {
+    char *ret_val;
+
+    ret_val = pl_cat(NULL, "asd");
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strcat_empty_params",
+                "Test 1: NULL not returned."
+            );
+
+    ret_val = pl_cat("asd", NULL);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strcat_empty_params",
+                "Test 2: NULL not returned."
+            );
+
+    ret_val = pl_cat(NULL, NULL);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strcat_empty_params",
+                "Test 3: NULL not returned."
             );
 }
 
@@ -513,6 +591,52 @@ void test_split_single_delim() {
 }
 
 
+void test_split_empty_paras() {
+    char **ret_val;
+    int size = 0;
+
+    ret_val = pl_split("", " ", &size);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_empty_paras",
+                "Test 1: NULL not returned."
+            );
+
+    ret_val = pl_split(NULL, " ", &size);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_empty_paras",
+                "Test 2: NULL not returned"
+            );
+
+    ret_val = pl_split("asd asd", "", &size);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_empty_paras",
+                "Test 3: NULL not returned."
+            );
+
+    ret_val = pl_split("asd asd", NULL, &size);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_empty_paras",
+                "Test 4: NULL not returned."
+            );
+
+    ret_val = pl_split("asd asd", " ", NULL);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_split_empty_paras",
+                "Test 5: NULL not returned."
+            );
+}
+
+
 void test_startswith() {
     char the_string[] = "http://google.com";
 
@@ -561,6 +685,27 @@ void test_startwith_empy_prefix() {
             "test_startwith_empy_prefix",
             "The function did not return the correct error value."
         );
+}
+
+
+void test_startwith_empty_params() {
+    int ret_val;
+
+    ret_val = pl_startswith(NULL, "asd");
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_startwith_empty_params",
+                "Test 1: -1 Not returned."
+            );
+
+    ret_val = pl_startswith("www.vg.no", NULL);
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_startwith_empty_params",
+                "Test 2: -1 Not returned."
+            );
 }
 
 
@@ -615,6 +760,154 @@ void test_endswith_empty_postfix() {
 }
 
 
+void test_endswith_empty_params() {
+    int ret_val;
+
+    ret_val = pl_endswith(NULL, ".com");
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_endswith_empty_params",
+                "Test 1: -1 Not returned."
+            );
+
+    ret_val = pl_endswith("asd.com", NULL);
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_endswith_empty_params",
+                "Test 1: -1 not returned."
+            );
+}
+
+
+void test_strip_no_chars() {
+    char the_string[] = "   aaabbbccc";
+    char str2[] = "aaabbbccc   ";
+    char str3[] = "   aaabbbccc   ";
+    char str4[] = "\n\r\t\v\f aaabbbccc    \f\v\r\n\t";
+    char *ret_val;
+
+    ret_val = pl_strip(the_string, NULL);
+    assert_equal_str(
+                "aaabbbccc",
+                ret_val,
+                "test_strip_no_chars",
+                "Test 1: Strings are not equal."
+            );
+
+    ret_val = pl_strip(str2, NULL);
+    assert_equal_str(
+                "aaabbbccc",
+                ret_val,
+                "test_strip_no_chars",
+                "Test 2: Strings are not equal."
+            );
+
+    ret_val = pl_strip(str3, NULL);
+    assert_equal_str(
+                "aaabbbccc",
+                ret_val,
+                "test_strip_no_chars",
+                "Test 3: Strings are not equal."
+            );
+
+    ret_val = pl_strip(str4, NULL);
+    assert_equal_str(
+                "aaabbbccc",
+                ret_val,
+                "test_strip_no_chars",
+                "Test 4: Strings are not equal."
+            );
+}
+
+
+void test_strip_with_chars() {
+    char *ret_val;
+    char str1[] = "aaabbbccc";
+    char str2[] = "bbbcccaaa";
+    char str3[] = "aaabbbcccaaa";
+    char str4[] = "adadbbbcccadad";
+
+    ret_val = pl_strip(str1, "a");
+    assert_equal_str(
+                "bbbccc",
+                ret_val,
+                "test_strip_with_chars",
+                "Test 1: Strings are not equal."
+            );
+
+    ret_val = pl_strip(str2, "a");
+    assert_equal_str(
+                "bbbccc",
+                ret_val,
+                "test_strip_with_chars",
+                "Test 2: Strings are not equal."
+            );
+
+    ret_val = pl_strip(str3, "a");
+    assert_equal_str(
+                "bbbccc",
+                ret_val,
+                "test_strip_with_chars",
+                "Test 3: Strings are not equal."
+            );
+
+    ret_val = pl_strip(str4, "ad");
+    assert_equal_str(
+                "bbbccc",
+                ret_val,
+                "test_strip_with_chars",
+                "Test 4: Strings are not equal."
+            );
+}
+
+
+void test_strip_empty_params() {
+    char *ret_val;
+
+    ret_val = pl_strip("", "a");
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strip_empty_params",
+                "Test 1: NULL not returned."
+            );
+
+    ret_val = pl_strip("   asd   ", "");
+    assert_equal_str(
+                "asd",
+                ret_val,
+                "test_strip_empty_params",
+                "Test 2: Strings not equal."
+            );
+
+    ret_val = pl_strip("   asd   ", NULL);
+    assert_equal_str(
+                "asd",
+                ret_val,
+                "test_strip_empty_params",
+                "Test 3: Strings not equal."
+            );
+
+    ret_val = pl_strip(NULL, NULL);
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strip_empty_params",
+                "Test 4: NULL not returned"
+            );
+
+    ret_val = pl_strip(NULL, "asd");
+    assert_equal_str(
+                NULL,
+                ret_val,
+                "test_strip_empty_params",
+                "Test 5: NULL not returned."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -624,23 +917,32 @@ int main () {
     test_slice_both_negative();
     test_slice_limit_oor();
     test_slice_offset_oor();
+    test_slice_empty_string();
     test_strcpy_no_alloc();
     test_strcpy_pre_alloc();
     test_strcpy_not_empty();
+    test_strcpy_empty_paras();
     test_strcat();
     test_strcat_empty_source();
     test_strcat_empty_destination();
+    test_strcat_empty_params();
     test_split();
     test_split_multiple_delims();
     test_split_delim_not_found();
     test_split_empty_delim();
     test_split_single_delim();
+    test_split_empty_paras();
     test_startswith();
     test_startwith_empy_string();
     test_startwith_empy_prefix();
+    test_startwith_empty_params();
     test_endswith();
     test_endswith_empty_string();
     test_endswith_empty_postfix();
+    test_endswith_empty_params();
+    test_strip_no_chars();
+    test_strip_with_chars();
+    test_strip_empty_params();
 
     return 0;
 }

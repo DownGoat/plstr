@@ -53,6 +53,10 @@
 char *pl_cpy(char *source, char *destination) {
     char *ret_val = NULL, *tmp = destination;
 
+    if (source == NULL) {
+        goto error_exit;
+    }
+
     if (destination == NULL) {
         tmp = calloc(strlen(source) + 1, sizeof(char));
         if (tmp == NULL) {
@@ -93,9 +97,13 @@ char *pl_slice(char *source, int offset, int limit) {
     char *ret_val = NULL, *tmp = NULL;
     int i, tmp_count = 0, new_limit, new_offset;
 
+    if (source == NULL || strlen(source) == 0) {
+        goto error_exit;
+    }
+
     // Get the right limit if limit is negative
     if (limit < 0) {
-        new_limit = strlen(source) + limit;
+        new_limit = (int) strlen(source) + limit;
     }
 
     else {
@@ -104,7 +112,7 @@ char *pl_slice(char *source, int offset, int limit) {
 
     // Same shit but with the offset.
     if (offset < 0) {
-        new_offset = strlen(source) + offset;
+        new_offset = (int) strlen(source) + offset;
     }
 
     else {
@@ -123,7 +131,7 @@ char *pl_slice(char *source, int offset, int limit) {
     /*
      * Exit if limit or offset points to somewhere outside of the string.
      */
-    if (new_limit > strlen(source) || new_offset > strlen(source)) {
+    if (new_limit > (int) strlen(source) || new_offset > (int) strlen(source)) {
         goto error_exit;
     }
 
@@ -162,6 +170,10 @@ error_exit:
  */
 char *pl_cat(char *destination, char *source) {
     char *ret_val = NULL, *tmp = NULL;
+
+    if (destination == NULL || source == NULL) {
+        goto error_exit;
+    }
 
     tmp = (char *) calloc(strlen(source) + strlen(destination) + 1, sizeof(char));
     if (tmp == NULL) {
@@ -209,7 +221,15 @@ char **pl_split(char *string, char *delim, int *size) {
     char **ret_val = NULL, **tmp = NULL, *pch = string, *offset = string;
     int i = 0, delims = 0;
 
-    if (strlen(delim) == 0) {
+    if (string == NULL || strlen(string) == 0) {
+        return NULL;
+    }
+
+    if (delim == NULL || strlen(delim) == 0) {
+        return NULL;
+    }
+
+    if (size == NULL) {
         return NULL;
     }
 
@@ -228,7 +248,7 @@ char **pl_split(char *string, char *delim, int *size) {
         return NULL;
     }
 
-    tmp = (char **) calloc(delims + 1, sizeof(char));
+    tmp = (char **) calloc(delims + 1, sizeof(char *));
     if (tmp == NULL) {
         goto error_exit;
     }
@@ -292,6 +312,10 @@ int pl_startswith(char *string, char *prefix) {
     char *tmp = NULL;
     int ret_val = -1;
 
+    if (string == NULL || prefix == NULL) {
+        goto error_exit;
+    }
+
     if (strlen(string) == 0 || strlen(prefix) == 0) {
         goto error_exit;
     }
@@ -338,6 +362,10 @@ int pl_endswith(char *string, char *postfix) {
     char *pch = NULL;
     int ret_val = -1;
 
+    if (string == NULL || postfix == NULL) {
+        goto error_exit;
+    }
+
     if (strlen(string) == 0 || strlen(postfix) == 0) {
         goto error_exit;
     }
@@ -357,4 +385,151 @@ int pl_endswith(char *string, char *postfix) {
 error_exit:
 
     return ret_val;
+}
+
+
+/**
+ * @brief This function handls the logic for the pl_split function for the cases
+ * where the chars parameter is empty.
+ */
+char *strip_empty_chars(char *string) {
+    char *offset = NULL, *limit = NULL, *ret_val;
+    int i;
+
+    for (i = 0; i < strlen(string); i++) {
+        switch ((int) string[i]) {
+            case 9:
+                break;
+            case 10:
+                break;
+            case 11:
+                break;
+            case 12:
+                break;
+            case 13:
+                break;
+            case 32:
+                break;
+            default:
+                offset = string + i;
+                i = strlen(string);
+                break;
+        }
+    }
+
+    // Cannot start comparison at the null terminator.
+    for (i = strlen(string) - 1; i >= 0; i--) {
+        switch ((int) string[i]) {
+            case 9:
+                break;
+            case 10:
+                break;
+            case 11:
+                break;
+            case 12:
+                break;
+            case 13:
+                break;
+            case 32:
+                break;
+            default:
+                limit = string + i;
+                i = 0;
+                break;
+        }
+    }
+
+    ret_val = (char *) calloc(limit - offset + 2, sizeof(char));
+    if (ret_val == NULL) {
+        goto error_exit;
+    }
+
+    strncpy(ret_val, offset, limit - offset + 1);
+
+    return ret_val;
+
+error_exit:
+    return ret_val;
+}
+
+
+/**
+ * @brief This is function handels logic for the pl_strip function when the
+ * chars parameter is not empty.
+ */
+char *strip_with_chars(char *string, char *chars) {
+    char *ret_val = NULL, *offset = NULL, *limit = NULL;
+    int i, x, found = 0;
+
+    for (i = 0; i < strlen(string); i++) {
+        for (x = 0; x < strlen(chars); x++) {
+            if (string[i] == chars[x]) {
+                found = 1;
+            }
+        }
+
+        if (!found) {
+            offset = string + i;
+            break;
+        }
+
+        found = 0;
+    }
+
+    found = 0;
+    // Cant start comparing the null terminator as it is not striped.
+    for (i = strlen(string) - 1; i >= 0; i--) {
+        for (x = 0; x < strlen(chars); x++) {
+            if (string[i] == chars[x]) {
+                found = 1;
+            }
+        }
+
+        if (!found) {
+            limit = string + i;
+            break;
+        }
+
+        found = 0;
+    }
+
+    ret_val = (char *) calloc(limit - offset + 2, sizeof(char));
+    if (ret_val == NULL) {
+        goto error_exit;
+    }
+
+    strncpy(ret_val, offset, limit - offset + 1);
+
+    return ret_val;
+
+error_exit:
+    return ret_val;
+}
+
+
+/**
+ * @brief This function strips characters from a string. The default behaviour
+ * if chars is NULL or empty string is to strip whitespace characters from
+ * either end of the string. The characters removed is \n \r \t \v \f and the
+ * space character. If the chars parameter contains characters those caracters
+ * are removed from either side of the string.
+ *
+ * @param string The string you want to split.
+ *
+ * @param chars The characters you want to strip from the string. If the
+ * parameter is empty or NULL whitespace is removed from either side.
+ *
+ * @return The function returns a pointer to the string with the characters
+ * removed. If the function fails NULL is returned.
+ */
+char *pl_strip(char *string, char *chars) {
+    if (string == NULL || strlen(string) == 0) {
+        return NULL;
+    }
+
+    if (chars == NULL || strlen(chars) == 0) {
+        return strip_empty_chars(string);
+    }
+
+    return strip_with_chars(string, chars);
 }
