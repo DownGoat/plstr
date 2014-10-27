@@ -908,6 +908,96 @@ void test_strip_empty_params() {
 }
 
 
+void test_translate() {
+    char *ret_val;
+
+    ret_val = pl_translate("read this short text", NULL, "aeiou");
+    assert_equal_str(
+                "rd ths shrt txt",
+                ret_val,
+                "test_translate",
+                "Test 1: Strings are not equal."
+            );
+
+    ret_val = pl_translate("read this short text", "aeiou", "xxxxx");
+    assert_equal_str(
+                "rxxd thxs shxrt txxt",
+                ret_val,
+                "test_translate",
+                "Test 2: Strings are not equal."
+            );
+
+    ret_val = pl_translate("read this short text", "zzzzz", "aeiou");
+    assert_equal_str(
+                "read this short text",
+                ret_val,
+                "test_translate",
+                "Test 3: Strings are not equal"
+            );
+}
+
+
+void test_translate_empty_params() {
+    char *ret_val;
+
+    ret_val = pl_translate("", "123", "321");
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 1: NULL not returned."
+            );
+
+    ret_val = pl_translate(NULL, "123", "321");
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 2: NULL not returned."
+            );
+
+    ret_val = pl_translate("spam eggs and ham", "", "321");
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 3: NULL not returned."
+            );
+
+    ret_val = pl_translate("spam eggs and ham", "ega", "");
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 4: NULL not returned."
+            );
+
+    ret_val = pl_translate("spam eggs and ham", "ega", NULL);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 5: NULL not returned."
+            );
+
+    ret_val = pl_translate("", "", "");
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 6: NULL not returned."
+            );
+
+    ret_val = pl_translate(NULL, NULL, NULL);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_translate_empty_params",
+                "Test 7: Null not returned."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -943,6 +1033,8 @@ int main () {
     test_strip_no_chars();
     test_strip_with_chars();
     test_strip_empty_params();
+    test_translate();
+    test_translate_empty_params();
 
     return 0;
 }

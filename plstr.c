@@ -396,6 +396,10 @@ char *strip_empty_chars(char *string) {
     char *offset = NULL, *limit = NULL, *ret_val;
     int i;
 
+    if (string == NULL || strlen(string) == 0) {
+        goto error_exit;
+    }
+
     for (i = 0; i < strlen(string); i++) {
         switch ((int) string[i]) {
             case 9:
@@ -449,6 +453,8 @@ char *strip_empty_chars(char *string) {
     return ret_val;
 
 error_exit:
+    free (ret_val);
+
     return ret_val;
 }
 
@@ -460,6 +466,14 @@ error_exit:
 char *strip_with_chars(char *string, char *chars) {
     char *ret_val = NULL, *offset = NULL, *limit = NULL;
     int i, x, found = 0;
+
+    if (string == NULL || chars == NULL) {
+        goto error_exit;
+    }
+
+    if (strlen(string) == 0 || strlen(chars) == 0) {
+        goto error_exit;
+    }
 
     for (i = 0; i < strlen(string); i++) {
         for (x = 0; x < strlen(chars); x++) {
@@ -532,4 +546,159 @@ char *pl_strip(char *string, char *chars) {
     }
 
     return strip_with_chars(string, chars);
+}
+
+
+/**
+ * @brief This function handels the cases for pl_translate where there is no
+ * table. It should not be called directly, call pl_translate with the table
+ * parameter set as NULL instead.
+ */
+char *translate_no_table(char *string, char *deletechars) {
+    char *tmp = NULL, *ret_val = NULL;
+    int i, x, found = 0, idx = 0;
+
+    if (string == NULL || deletechars == NULL) {
+        goto error_exit;
+    }
+
+    if (strlen(string) == 0 || strlen(deletechars) == 0) {
+        goto error_exit;
+    }
+
+    for (i = 0; i < strlen(string); i++) {
+        for (x = 0; x < strlen(deletechars); x++) {
+            if (string[i] == deletechars[x]) {
+                found++;
+            }
+        }
+    }
+
+    tmp = (char *) calloc(strlen(string) - found + 1, sizeof(char));
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+
+    for (i = 0; i < strlen(string); i++) {
+        int delete = 0;
+
+        for (x = 0; x < strlen(deletechars); x++) {
+            if (string[i] == deletechars[x]) {
+                delete = 1;
+            }
+        }
+
+        if (!delete) {
+            tmp[idx] = string[i];
+            idx++;
+        }
+    }
+
+    ret_val = tmp;
+
+    return ret_val;
+
+error_exit:
+    free(tmp);
+
+    return ret_val;
+}
+
+
+/**
+ * @bried This function handels the logic for the pl_translate function in the
+ * cases where the table parameter is not empty. Do not call this function
+ * directly, call pl_translate instead.
+ */
+char *translate_with_table(char *string, char *table, char *deletechars) {
+    char *tmp = NULL, *ret_val = NULL;
+    char swap_table[256];
+    int i;
+
+    if (string == NULL || table == NULL || deletechars == NULL) {
+        goto error_exit;
+    }
+
+    if (strlen(string) == 0 || strlen(table) == 0 || strlen(deletechars) == 0) {
+        goto error_exit;
+    }
+
+    if (strlen(table) != strlen(deletechars)) {
+        goto error_exit;
+    }
+
+    for (i = 0; i < 256; i++) {
+        swap_table[i] = i;
+    }
+
+    for (i = 0; i < strlen(table); i++) {
+        swap_table[(int) table[i]] = deletechars[i];
+    }
+
+    tmp = pl_cpy(string, NULL);
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    for (i = 0; i < strlen(tmp); i++) {
+        tmp[i] = swap_table[(int) tmp[i]];
+    }
+
+    ret_val = tmp;
+
+    return ret_val;
+
+error_exit:
+    free(tmp);
+
+    return ret_val;
+}
+
+
+/**
+ * @brief This function implements the behaviour of python string translate
+ * method. This function has two different behaviours. If the table parameter,
+ * is NULL the characters passed in the deletechars parameter are removed from
+ * the string. If you pass it the string 'read this short text', and deletechars
+ * is 'aeiou', the returned string is 'rd ths shrt txt'.
+ *
+ * If the table parameter is not empty, every occurence of one of the table
+ * characters is replaced with the character in deletechars at the same index.
+ * So if the same string is passed 'read this short text', and the table is
+ * 'xxxxx', and deletechars is 'aeiou' the returned string is
+ * 'rxxd thxs shxrt txxt'. The length of the table and deletechars needs to be
+ * of the same length, or else the function will return NULL.
+ *
+ * @param string The string you want to translate.
+ *
+ * @param Optiional table parameter, if set it is used to swap the characters
+ * passed in the deletechars parameter. If not every occurence of the characters
+ * passed in deletechars is removed from the string.
+ *
+ * @param deletechars The characters in the parameter is removed or swaped out
+ * from the string. If the table parameter is used this parameter and table
+ * needs to be of equal size.
+ *
+ * @return Returns a pointer to the new string with the deleted/swapped out
+ * characters. If the function fails NULL is returned.
+ */
+char *pl_translate(char *string, char *table, char *deletechars) {
+    if (string == NULL || deletechars == NULL) {
+        return NULL;
+    }
+
+    if (strlen(string) == 0 || strlen(deletechars) == 0) {
+        return NULL;
+    }
+
+    if (table != NULL && strlen(table) == 0) {
+        return NULL;
+    }
+
+    if (table == NULL) {
+        return translate_no_table(string, deletechars);
+    }
+
+    return translate_with_table(string, table, deletechars);
 }

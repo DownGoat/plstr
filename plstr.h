@@ -47,4 +47,6 @@ int pl_endswith(char *string, char *postfix);
 
 char *pl_strip(char *string, char *chars);
 
+char *pl_translate(char *string, char *table, char *deletechars);
+
 #endif /* PLSTR_H */
