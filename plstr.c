@@ -23,6 +23,30 @@
  */
 /**
  * @file plstr.c
+ *
+ * \mainpage
+ * \section  Introduction
+ * This library implements some of Python's string methods to make working with
+ * strings in C a little less annoying. Not all of the methods are implemented
+ * at this stage, but more are in the process of being added. Working with
+ * strings have generally been dangerous in C, buffer overflows and the likes
+ * can happen easily if the programmer is not very careful.
+ *
+ * The goal of this library is to implement Python's string methods in a manner
+ * that makes it hard for the users of the library to make security errors.
+ * The allocation of buffers for the strings are in most of the functions done
+ * internally, so the user does not need to allocate the memory needed. This
+ * also means that the return values for most of the functions is pointers to
+ * buffers allocated on the heap, and the user does then need to free this
+ * memory after use.
+ *
+ * The project homepage is hosted at
+ * <a href="https://github.com/DownGoat/plstr">GitHub</a>.
+ *
+ * \section Examples
+ * At this time there is example code for how to use all the functions of the
+ * library, see \ref plstr.c for the examples of how to use the different
+ * functions.
  */
 
 #include <string.h>
@@ -31,14 +55,17 @@
 
 /**
  * @brief This function is a wrapper around \a strcpy, it copies a string into a
- * buffer. If the destination argument is \b NULL a new buffer is allocated,
- * and if it is not \b NULL the string passed in source is copied into the
+ * buffer. If the \a destination argument is \b NULL a new buffer is allocated,
+ * and if it is not \b NULL the string passed in \a source is copied into the
  * destination buffer.
+ *
+ * If the \a source parameter is \b NULL you will need to free the returned
+ * buffer after use.
  *
  * @param source This is string you want to copy into the buffer.
  *
- * @param destination This is the optional destination buffer, if \b NULL is
- * passed a new buffer is allocated and the source is copied into it. If it
+ * @param destination This is the optional \a destination buffer, if \b NULL is
+ * passed a new buffer is allocated and the \a source is copied into it. If it
  * is not \b NULL the source will be copied into the destination buffer.
  *
  * @return If successful a pointer to buffer is returned. If the function fails
@@ -104,7 +131,6 @@ char *pl_cpy(char *source, char *destination) {
 
 error_exit:
     free(tmp);
-
     return ret_val;
 }
 
@@ -114,6 +140,8 @@ error_exit:
  * substring. The original string is not manipulated in any way. The function
  * supports the use of both a negative offset and limit. When using a negative
  * value it is offsetted from the end of the string.
+ *
+ * You need to free the returned buffer after use.
  *
  * @param source The string you want to slice.
  *
@@ -230,6 +258,8 @@ error_exit:
  * arguments, and both arguments are copied into it. The resulting string
  * is \a destination+source.
  *
+ * You need to free the returned buffer after use.
+ *
  * @param destination The first string you want to concatenation to.
  *
  * @param source The string you want concatenation destination with.
@@ -307,6 +337,10 @@ error_exit:
  * ["foo", "bar", "magic"]. If the delimiter is not found, or it is empty string
  * NULL is returned instead. The original string is not modified.
  *
+ * You need to free the returned buffer after use, remember to iterate over the
+ * returned buffer and free every element in it before you free the returned
+ * buffer.
+ *
  * @param string The string you want to split up.
  *
  * @param delim The delimiter you want to use.
@@ -316,7 +350,7 @@ error_exit:
  * @return Returns an array of strings with the different sub strings if
  * successful. The size argument is set to the size of the returned array.
  * If the function fails \b NULL is returned.
- * 
+ *
 \b Example
 \code{.c}
 #include "plstr.h"
@@ -735,6 +769,8 @@ error_exit:
  * the space character. If the chars parameter contains characters those
  * characters are removed from either side of the string.
  *
+ * You need to free the returned buffer after use.
+ *
  * @param string The string you want to split.
  *
  * @param chars The characters you want to strip from the string. If the
@@ -775,7 +811,7 @@ int main() {
  *
  * \b Output
 \code{.unparsed}
-Original:    lots of space   
+Original:    lots of space
 Striped: lots of space
 Striped: TheDude99
 \endcode
@@ -810,7 +846,7 @@ char *translate_no_table(char *string, char *deletechars) {
         goto error_exit;
     }
 
-    for (i = 0; i < strlen(string); i++) {
+   for (i = 0; i < strlen(string); i++) {
         for (x = 0; x < strlen(deletechars); x++) {
             if (string[i] == deletechars[x]) {
                 found++;
@@ -917,6 +953,8 @@ error_exit:
  * is \a 'xxxxx', and deletechars is \a 'aeiou' the returned string is
  * <a>'rxxd thxs shxrt txxt'</a>. The length of the table and deletechars needs
  * to be of the same length, or else the function will return \b NULL.
+ *
+ * You need to free the returned buffer after use.
  *
  * @param string The string you want to translate.
  *
