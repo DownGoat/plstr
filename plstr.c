@@ -110,7 +110,7 @@ error_exit:
 
 
 /**
- * @brief This function slices an string using a offset and a limit and returns a
+ * @brief This function slices an string using an offset and a limit and returns a
  * substring. The original string is not manipulated in any way. The function
  * supports the use of both a negative offset and limit. When using a negative
  * value it is offsetted from the end of the string.
@@ -127,7 +127,7 @@ error_exit:
  * \b NULL pointer can also be returned if the call to calloc fails, or if the
  * offset or limit is outside the range of the string.
  *
- * \b Example
+\b Example
 \code{.c}
 #include "plstr.h"
 #include <stdlib.h>
@@ -136,25 +136,19 @@ error_exit:
 
 
 int main() {
-    char the_string[] = "This is a short string.";
-    char **splitted;
-    int size;
+    char the_string[] = "subdermatoglyphic";
+    char *sliced;
 
-    splitted = pl_split(the_string, " ", &size);
+    sliced = pl_slice(the_string, 3, 10);
+    if (sliced != NULL) {
+        printf("the_string: %s\nsliced 3, 10: %s\n", the_string, sliced);
+        free(sliced);
+    }
 
-    if (splitted != NULL) {
-        int i;
-
-        printf("The size is %d\n", size);
-        for (i = 0; i < size; i++) {
-            printf("splitted[%d] = %s\n", i, splitted[i]);
-        }
-
-        for (i = 0; i < size; i++) {
-            free(splitted[i]);
-        }
-
-        free(splitted);
+    sliced = pl_slice(the_string, 0, -10);
+    if (sliced != NULL) {
+        printf("sliced 0,-10: %s\n", sliced);
+        free(sliced);
     }
 
     return 0;
@@ -163,12 +157,9 @@ int main() {
  *
  * \b Output
 \code{.unparsed}
-The size is 5
-splitted[0] = This
-splitted[1] = is
-splitted[2] = a
-splitted[3] = short
-splitted[4] = string.
+the_string: subdermatoglyphic
+sliced 3, 10: dermato
+sliced 0,-10: subderm
 \endcode
  */
 char *pl_slice(char *source, int offset, int limit) {
@@ -245,6 +236,37 @@ error_exit:
  *
  * @return Returns a pointer to the new buffer of the concatenation strings.
  * If the function fails \b NULL is returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char foo[] = "foo";
+    char bar[] = "bar";
+    char *concatenated = NULL;
+
+    concatenated = pl_cat(foo, bar);
+    if (concatenated != NULL) {
+        printf("foo:%s\nbar:%s\nconcatenated:%s\n", foo, bar, concatenated);
+    }
+
+    free(concatenated);
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code
+foo:foo
+bar:bar
+concatenated:foobar
+\endcode
  */
 char *pl_cat(char *destination, char *source) {
     char *ret_val = NULL, *tmp = NULL;
@@ -280,10 +302,10 @@ error_exit:
  * @brief This function splits the string using a delimiter, and puts the
  * results in array of strings. The function differs from the behaviour of
  * strtok, if the delimiter is longer than a single character it splits the
- * string where where the delimeter is found. If the string is
+ * string where where the delimiter is found. If the string is
  * \a "fooasdbarasdmagic" and the delimiter is \a "asd" the result will be
- * ["foo", "bar", "magic"]. If the delimter is not found, or it is empty string
- * NULL is returned instead. The orignal string is not modified.
+ * ["foo", "bar", "magic"]. If the delimiter is not found, or it is empty string
+ * NULL is returned instead. The original string is not modified.
  *
  * @param string The string you want to split up.
  *
@@ -291,9 +313,53 @@ error_exit:
  *
  * @param size This will be set to the size of the returned array.
  *
- * @return Returns a array of strings whith the different sub strings if
+ * @return Returns an array of strings with the different sub strings if
  * successful. The size argument is set to the size of the returned array.
  * If the function fails \b NULL is returned.
+ * 
+\b Example
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char the_string[] = "This is a short string.";
+    char **splitted;
+    int size;
+
+    splitted = pl_split(the_string, " ", &size);
+
+    if (splitted != NULL) {
+        int i;
+
+        printf("The size is %d\n", size);
+        for (i = 0; i < size; i++) {
+            printf("splitted[%d] = %s\n", i, splitted[i]);
+        }
+
+        for (i = 0; i < size; i++) {
+            free(splitted[i]);
+        }
+
+        free(splitted);
+    }
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+The size is 5
+splitted[0] = This
+splitted[1] = is
+splitted[2] = a
+splitted[3] = short
+splitted[4] = string.
+\endcode
  */
 char **pl_split(char *string, char *delim, int *size) {
     char **ret_val = NULL, **tmp = NULL, *pch = string, *offset = string;
@@ -385,6 +451,37 @@ error_exit:
  *
  * @return Returns \b 1 if the string starts with the prefix, returns \b 0 if it
  * does not. If the function fails \b -1 is returned.
+ *
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char the_string[] = "http://google.com";
+    int ret_val;
+
+    ret_val = pl_startswith(the_string, "http://");
+    if (ret_val) {
+        printf("the_string, does indeed start with http://\n");
+    }
+
+    ret_val = pl_startswith(the_string, "ftp://");
+    if (!ret_val) {
+        printf("And it does not start with ftp://\n");
+    }
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+the_string, does indeed start with http://
+And it does not start with ftp://
+\endcode
  */
 int pl_startswith(char *string, char *prefix) {
     char *tmp = NULL;
@@ -435,6 +532,38 @@ error_exit:
  * @return The function returns \b 1 if the string ends with the postfix. If the
  * string does not end with the postfix \b 0 is returned. If the function fails
  * \b -1 is returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char the_string[] = "http://google.com";
+    int ret_val;
+
+    ret_val = pl_endswith(the_string, ".com");
+    if (ret_val) {
+            printf("the_string, does indeed end with .com\n");
+    }
+
+    ret_val = pl_endswith(the_string, ".net");
+    if (!ret_val) {
+            printf("And it does not end with .net\n");
+    }
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+the_string, does indeed end with .com
+And it does not end with .net
+\endcode
  */
 int pl_endswith(char *string, char *postfix) {
     char *pch = NULL;
@@ -604,7 +733,7 @@ error_exit:
  * if chars is \b NULL or empty string is to strip whitespace characters from
  * either end of the string. The characters removed is '\\n \\r \\t \\v \\f' and
  * the space character. If the chars parameter contains characters those
- * caracters are removed from either side of the string.
+ * characters are removed from either side of the string.
  *
  * @param string The string you want to split.
  *
@@ -613,6 +742,43 @@ error_exit:
  *
  * @return The function returns a pointer to the string with the characters
  * removed. If the function fails \b NULL is returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char whitespace[] = "   lots of space   ";
+    char cool_nick[] = "xxxxTheDude99xxxx";
+    char *ret_val = NULL;
+
+    ret_val = pl_strip(whitespace, NULL);
+    if (ret_val != NULL) {
+        printf("Original: %s\nStriped: %s\n", whitespace, ret_val);
+        free(ret_val);
+    }
+
+    ret_val = pl_strip(cool_nick, "x");
+    if (ret_val != NULL) {
+        printf("Striped: %s\n", ret_val);
+        free(ret_val);
+    }
+
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+Original:    lots of space   
+Striped: lots of space
+Striped: TheDude99
+\endcode
  */
 char *pl_strip(char *string, char *chars) {
     if (string == NULL || strlen(string) == 0) {
@@ -745,7 +911,7 @@ error_exit:
  * <a> 'read this short text'</a>, and deletechars is \a 'aeiou', the returned
  * string is <a>'rd ths shrt txt'</a>.
  *
- * If the table parameter is not empty, every occurence of one of the table
+ * If the table parameter is not empty, every occurrence of one of the table
  * characters is replaced with the character in deletechars at the same index.
  * So if the same string is passed <a>'read this short text'</a>, and the table
  * is \a 'xxxxx', and deletechars is \a 'aeiou' the returned string is
@@ -755,15 +921,50 @@ error_exit:
  * @param string The string you want to translate.
  *
  * @param table Optional parameter, if set it is used to swap the characters
- * passed in the deletechars parameter. If not every occurence of the characters
+ * passed in the deletechars parameter. If not every occurrence of the characters
  * passed in deletechars is removed from the string.
  *
- * @param deletechars The characters in the parameter is removed or swaped out
+ * @param deletechars The characters in the parameter is removed or swapped out
  * from the string. If the table parameter is used this parameter and table
  * needs to be of equal size.
  *
  * @return Returns a pointer to the new string with the deleted/swapped out
  * characters. If the function fails \b NULL is returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char the_string[] = "read this short text";
+    char *ret_val = NULL;
+
+    ret_val = pl_translate(the_string, NULL, "aeiou");
+    if (ret_val != NULL) {
+        printf("the_string: %s\nno table:%s\n", the_string, ret_val);
+        free(ret_val);
+    }
+
+    ret_val = pl_translate(the_string, "aeiou", "xxxxx");
+    if (ret_val != NULL) {
+        printf("with table: %s\n", ret_val);
+        free(ret_val);
+    }
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+the_string: read this short text
+no table:rd ths shrt txt
+with table: rxxd thxs shxrt txxt
+\endcode
  */
 char *pl_translate(char *string, char *table, char *deletechars) {
     if (string == NULL || deletechars == NULL) {

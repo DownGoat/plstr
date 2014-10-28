@@ -5,25 +5,19 @@
 
 
 int main() {
-    char the_string[] = "This is a short string.";
-    char **splitted;
-    int size;
+    char the_string[] = "subdermatoglyphic";
+    char *sliced;
 
-    splitted = pl_split(the_string, " ", &size);
+    sliced = pl_slice(the_string, 3, 10);
+    if (sliced != NULL) {
+        printf("the_string: %s\nsliced 3, 10: %s\n", the_string, sliced);
+        free(sliced);
+    }
 
-    if (splitted != NULL) {
-        int i;
-
-        printf("The size is %d\n", size);
-        for (i = 0; i < size; i++) {
-            printf("splitted[%d] = %s\n", i, splitted[i]);
-        }
-
-        for (i = 0; i < size; i++) {
-            free(splitted[i]);
-        }
-
-        free(splitted);
+    sliced = pl_slice(the_string, 0, -10);
+    if (sliced != NULL) {
+        printf("sliced 0,-10: %s\n", sliced);
+        free(sliced);
     }
 
     return 0;

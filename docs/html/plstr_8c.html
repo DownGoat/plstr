@@ -93,13 +93,13 @@ Functions</h2></td></tr>
 <tr class="memdesc:a9ac9f1fe19f50bb7b78e7a92e8cffc81"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function is a wrapper around <em>strcpy</em>, it copies a string into a buffer. If the destination argument is <b>NULL</b> a new buffer is allocated, and if it is not <b>NULL</b> the string passed in source is copied into the destination buffer.  <a href="#a9ac9f1fe19f50bb7b78e7a92e8cffc81">More...</a><br/></td></tr>
 <tr class="separator:a9ac9f1fe19f50bb7b78e7a92e8cffc81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72b018223239f994ce52ab5daed45504"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#a72b018223239f994ce52ab5daed45504">pl_slice</a> (char *source, int offset, int limit)</td></tr>
-<tr class="memdesc:a72b018223239f994ce52ab5daed45504"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function slices an string using a offset and a limit and returns a substring. The original string is not manipulated in any way. The function supports the use of both a negative offset and limit. When using a negative value it is offsetted from the end of the string.  <a href="#a72b018223239f994ce52ab5daed45504">More...</a><br/></td></tr>
+<tr class="memdesc:a72b018223239f994ce52ab5daed45504"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function slices an string using an offset and a limit and returns a substring. The original string is not manipulated in any way. The function supports the use of both a negative offset and limit. When using a negative value it is offsetted from the end of the string.  <a href="#a72b018223239f994ce52ab5daed45504">More...</a><br/></td></tr>
 <tr class="separator:a72b018223239f994ce52ab5daed45504"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7619d6d2ab7b5ea840ecd42fe236458"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#ac7619d6d2ab7b5ea840ecd42fe236458">pl_cat</a> (char *destination, char *source)</td></tr>
 <tr class="memdesc:ac7619d6d2ab7b5ea840ecd42fe236458"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function creates a new buffer that is the size of the two arguments, and both arguments are copied into it. The resulting string is <em>destination+source</em>.  <a href="#ac7619d6d2ab7b5ea840ecd42fe236458">More...</a><br/></td></tr>
 <tr class="separator:ac7619d6d2ab7b5ea840ecd42fe236458"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa3763a51e5abd7ec2f128ff56207154"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#aaa3763a51e5abd7ec2f128ff56207154">pl_split</a> (char *string, char *delim, int *size)</td></tr>
-<tr class="memdesc:aaa3763a51e5abd7ec2f128ff56207154"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function splits the string using a delimiter, and puts the results in array of strings. The function differs from the behaviour of strtok, if the delimiter is longer than a single character it splits the string where where the delimeter is found. If the string is <em>"fooasdbarasdmagic"</em> and the delimiter is <em>"asd"</em> the result will be ["foo", "bar", "magic"]. If the delimter is not found, or it is empty string NULL is returned instead. The orignal string is not modified.  <a href="#aaa3763a51e5abd7ec2f128ff56207154">More...</a><br/></td></tr>
+<tr class="memdesc:aaa3763a51e5abd7ec2f128ff56207154"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function splits the string using a delimiter, and puts the results in array of strings. The function differs from the behaviour of strtok, if the delimiter is longer than a single character it splits the string where where the delimiter is found. If the string is <em>"fooasdbarasdmagic"</em> and the delimiter is <em>"asd"</em> the result will be ["foo", "bar", "magic"]. If the delimiter is not found, or it is empty string NULL is returned instead. The original string is not modified.  <a href="#aaa3763a51e5abd7ec2f128ff56207154">More...</a><br/></td></tr>
 <tr class="separator:aaa3763a51e5abd7ec2f128ff56207154"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23a850d43f642b7a395f63a46664f6d3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#a23a850d43f642b7a395f63a46664f6d3">pl_startswith</a> (char *string, char *prefix)</td></tr>
 <tr class="memdesc:a23a850d43f642b7a395f63a46664f6d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the string starts with a prefix. Does not modify the string.  <a href="#a23a850d43f642b7a395f63a46664f6d3">More...</a><br/></td></tr>
@@ -116,7 +116,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
 <tr class="memdesc:a572419d0fe16d487638f5f07bbb7301a"><td class="mdescLeft">&#160;</td><td class="mdescRight">This is function handels logic for the pl_strip function when the chars parameter is not empty. <br/></td></tr>
 <tr class="separator:a572419d0fe16d487638f5f07bbb7301a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae38f5bd1c10f47b0b32d67347c04a32"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#aae38f5bd1c10f47b0b32d67347c04a32">pl_strip</a> (char *string, char *chars)</td></tr>
-<tr class="memdesc:aae38f5bd1c10f47b0b32d67347c04a32"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function strips characters from a string. The default behaviour if chars is <b>NULL</b> or empty string is to strip whitespace characters from either end of the string. The characters removed is '\n \r \t \v \f' and the space character. If the chars parameter contains characters those caracters are removed from either side of the string.  <a href="#aae38f5bd1c10f47b0b32d67347c04a32">More...</a><br/></td></tr>
+<tr class="memdesc:aae38f5bd1c10f47b0b32d67347c04a32"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function strips characters from a string. The default behaviour if chars is <b>NULL</b> or empty string is to strip whitespace characters from either end of the string. The characters removed is '\n \r \t \v \f' and the space character. If the chars parameter contains characters those characters are removed from either side of the string.  <a href="#aae38f5bd1c10f47b0b32d67347c04a32">More...</a><br/></td></tr>
 <tr class="separator:aae38f5bd1c10f47b0b32d67347c04a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4fd5b86a5359031c55828ed8dccf7dd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4fd5b86a5359031c55828ed8dccf7dd"></a>
 char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#ab4fd5b86a5359031c55828ed8dccf7dd">translate_no_table</a> (char *string, char *deletechars)</td></tr>
@@ -163,8 +163,33 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns a pointer to the new buffer of the concatenation strings. If the function fails <b>NULL</b> is returned. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>Returns a pointer to the new buffer of the concatenation strings. If the function fails <b>NULL</b> is returned.</dd></dl>
+<p><b>Example</b> </p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">char</span> foo[] = <span class="stringliteral">&quot;foo&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">char</span> bar[] = <span class="stringliteral">&quot;bar&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">char</span> *concatenated = NULL;</div>
+<div class="line"></div>
+<div class="line">    concatenated = <a class="code" href="plstr_8c.html#ac7619d6d2ab7b5ea840ecd42fe236458">pl_cat</a>(foo, bar);</div>
+<div class="line">    <span class="keywordflow">if</span> (concatenated != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;foo:%s\nbar:%s\nconcatenated:%s\n&quot;</span>, foo, bar, concatenated);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    free(concatenated);</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><b>Output</b> </p>
+<div class="fragment"><div class="line">foo:foo</div>
+<div class="line">bar:bar</div>
+<div class="line">concatenated:foobar</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a class="anchor" id="a9ac9f1fe19f50bb7b78e7a92e8cffc81"></a>
@@ -268,8 +293,34 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The function returns <b>1</b> if the string ends with the postfix. If the string does not end with the postfix <b>0</b> is returned. If the function fails <b>-1</b> is returned. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>The function returns <b>1</b> if the string ends with the postfix. If the string does not end with the postfix <b>0</b> is returned. If the function fails <b>-1</b> is returned.</dd></dl>
+<p><b>Example</b> </p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">char</span> the_string[] = <span class="stringliteral">&quot;http://google.com&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">int</span> ret_val;</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#abd242e26168f062e39e93fbefd2945c4">pl_endswith</a>(the_string, <span class="stringliteral">&quot;.com&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val) {</div>
+<div class="line">            printf(<span class="stringliteral">&quot;the_string, does indeed end with .com\n&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#abd242e26168f062e39e93fbefd2945c4">pl_endswith</a>(the_string, <span class="stringliteral">&quot;.net&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (!ret_val) {</div>
+<div class="line">            printf(<span class="stringliteral">&quot;And it does not end with .net\n&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><b>Output</b> </p>
+<div class="fragment"><div class="line">the_string, does indeed end with .com</div>
+<div class="line">And it does not end with .net</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a class="anchor" id="a72b018223239f994ce52ab5daed45504"></a>
@@ -302,7 +353,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
       </table>
 </div><div class="memdoc">
 
-<p>This function slices an string using a offset and a limit and returns a substring. The original string is not manipulated in any way. The function supports the use of both a negative offset and limit. When using a negative value it is offsetted from the end of the string. </p>
+<p>This function slices an string using an offset and a limit and returns a substring. The original string is not manipulated in any way. The function supports the use of both a negative offset and limit. When using a negative value it is offsetted from the end of the string. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">source</td><td>The string you want to slice.</td></tr>
@@ -312,6 +363,78 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The function returns a pointer to an allocated buffer containing the substring if successful. In cases where the limit is smaller than the offset, or if they are equal a <b>NULL</b> pointer is returned. The returned <b>NULL</b> pointer can also be returned if the call to calloc fails, or if the offset or limit is outside the range of the string.</dd></dl>
+<p><b>Example</b> </p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">char</span> the_string[] = <span class="stringliteral">&quot;subdermatoglyphic&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">char</span> *sliced;</div>
+<div class="line"></div>
+<div class="line">    sliced = <a class="code" href="plstr_8c.html#a72b018223239f994ce52ab5daed45504">pl_slice</a>(the_string, 3, 10);</div>
+<div class="line">    <span class="keywordflow">if</span> (sliced != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;the_string: %s\nsliced 3, 10: %s\n&quot;</span>, the_string, sliced);</div>
+<div class="line">        free(sliced);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    sliced = <a class="code" href="plstr_8c.html#a72b018223239f994ce52ab5daed45504">pl_slice</a>(the_string, 0, -10);</div>
+<div class="line">    <span class="keywordflow">if</span> (sliced != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;sliced 0,-10: %s\n&quot;</span>, sliced);</div>
+<div class="line">        free(sliced);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><b>Output</b> </p>
+<div class="fragment"><div class="line">the_string: subdermatoglyphic</div>
+<div class="line">sliced 3, 10: dermato</div>
+<div class="line">sliced 0,-10: subderm</div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a class="anchor" id="aaa3763a51e5abd7ec2f128ff56207154"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char** pl_split </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>delim</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function splits the string using a delimiter, and puts the results in array of strings. The function differs from the behaviour of strtok, if the delimiter is longer than a single character it splits the string where where the delimiter is found. If the string is <em>"fooasdbarasdmagic"</em> and the delimiter is <em>"asd"</em> the result will be ["foo", "bar", "magic"]. If the delimiter is not found, or it is empty string NULL is returned instead. The original string is not modified. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>The string you want to split up.</td></tr>
+    <tr><td class="paramname">delim</td><td>The delimiter you want to use.</td></tr>
+    <tr><td class="paramname">size</td><td>This will be set to the size of the returned array.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns an array of strings with the different sub strings if successful. The size argument is set to the size of the returned array. If the function fails <b>NULL</b> is returned.</dd></dl>
 <p><b>Example</b> </p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
@@ -353,49 +476,6 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
 </div><!-- fragment --> 
 </div>
 </div>
-<a class="anchor" id="aaa3763a51e5abd7ec2f128ff56207154"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char** pl_split </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>string</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>delim</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>This function splits the string using a delimiter, and puts the results in array of strings. The function differs from the behaviour of strtok, if the delimiter is longer than a single character it splits the string where where the delimeter is found. If the string is <em>"fooasdbarasdmagic"</em> and the delimiter is <em>"asd"</em> the result will be ["foo", "bar", "magic"]. If the delimter is not found, or it is empty string NULL is returned instead. The orignal string is not modified. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">string</td><td>The string you want to split up.</td></tr>
-    <tr><td class="paramname">delim</td><td>The delimiter you want to use.</td></tr>
-    <tr><td class="paramname">size</td><td>This will be set to the size of the returned array.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns a array of strings whith the different sub strings if successful. The size argument is set to the size of the returned array. If the function fails <b>NULL</b> is returned. </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="a23a850d43f642b7a395f63a46664f6d3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -428,8 +508,33 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns <b>1</b> if the string starts with the prefix, returns <b>0</b> if it does not. If the function fails <b>-1</b> is returned. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>Returns <b>1</b> if the string starts with the prefix, returns <b>0</b> if it does not. If the function fails <b>-1</b> is returned.</dd></dl>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">char</span> the_string[] = <span class="stringliteral">&quot;http://google.com&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">int</span> ret_val;</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#a23a850d43f642b7a395f63a46664f6d3">pl_startswith</a>(the_string, <span class="stringliteral">&quot;http://&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;the_string, does indeed start with http://\n&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#a23a850d43f642b7a395f63a46664f6d3">pl_startswith</a>(the_string, <span class="stringliteral">&quot;ftp://&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (!ret_val) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;And it does not start with ftp://\n&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><b>Output</b> </p>
+<div class="fragment"><div class="line">the_string, does indeed start with http:<span class="comment">//</span></div>
+<div class="line">And it does not start with ftp:<span class="comment">//</span></div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a class="anchor" id="aae38f5bd1c10f47b0b32d67347c04a32"></a>
@@ -456,7 +561,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
       </table>
 </div><div class="memdoc">
 
-<p>This function strips characters from a string. The default behaviour if chars is <b>NULL</b> or empty string is to strip whitespace characters from either end of the string. The characters removed is '\n \r \t \v \f' and the space character. If the chars parameter contains characters those caracters are removed from either side of the string. </p>
+<p>This function strips characters from a string. The default behaviour if chars is <b>NULL</b> or empty string is to strip whitespace characters from either end of the string. The characters removed is '\n \r \t \v \f' and the space character. If the chars parameter contains characters those characters are removed from either side of the string. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">string</td><td>The string you want to split.</td></tr>
@@ -464,8 +569,39 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The function returns a pointer to the string with the characters removed. If the function fails <b>NULL</b> is returned. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>The function returns a pointer to the string with the characters removed. If the function fails <b>NULL</b> is returned.</dd></dl>
+<p><b>Example</b> </p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">char</span> whitespace[] = <span class="stringliteral">&quot;   lots of space   &quot;</span>;</div>
+<div class="line">    <span class="keywordtype">char</span> cool_nick[] = <span class="stringliteral">&quot;xxxxTheDude99xxxx&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">char</span> *ret_val = NULL;</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#aae38f5bd1c10f47b0b32d67347c04a32">pl_strip</a>(whitespace, NULL);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Original: %s\nStriped: %s\n&quot;</span>, whitespace, ret_val);</div>
+<div class="line">        free(ret_val);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#aae38f5bd1c10f47b0b32d67347c04a32">pl_strip</a>(cool_nick, <span class="stringliteral">&quot;x&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Striped: %s\n&quot;</span>, ret_val);</div>
+<div class="line">        free(ret_val);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><b>Output</b> </p>
+<div class="fragment"><div class="line">Original:    lots of space   </div>
+<div class="line">Striped: lots of space</div>
+<div class="line">Striped: TheDude99</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a class="anchor" id="a7f89a8afe71bc042496062c00659aacc"></a>
@@ -500,23 +636,52 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
 
 <p>This function implements the behaviour of python string translate method. This function has two different behaviours. It either deletes characters from the string, or switches out the characters with the ones set in the table. </p>
 <p>If the table parameter, is <b>NULL</b> the characters passed in the deletechars parameter are removed from the string. If you pass it the string  'read this short text', and deletechars is <em>'aeiou'</em>, the returned string is 'rd ths shrt txt'.</p>
-<p>If the table parameter is not empty, every occurence of one of the table characters is replaced with the character in deletechars at the same index. So if the same string is passed 'read this short text', and the table is <em>'xxxxx'</em>, and deletechars is <em>'aeiou'</em> the returned string is 'rxxd thxs shxrt txxt'. The length of the table and deletechars needs to be of the same length, or else the function will return <b>NULL</b>.</p>
+<p>If the table parameter is not empty, every occurrence of one of the table characters is replaced with the character in deletechars at the same index. So if the same string is passed 'read this short text', and the table is <em>'xxxxx'</em>, and deletechars is <em>'aeiou'</em> the returned string is 'rxxd thxs shxrt txxt'. The length of the table and deletechars needs to be of the same length, or else the function will return <b>NULL</b>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">string</td><td>The string you want to translate.</td></tr>
-    <tr><td class="paramname">table</td><td>Optional parameter, if set it is used to swap the characters passed in the deletechars parameter. If not every occurence of the characters passed in deletechars is removed from the string.</td></tr>
-    <tr><td class="paramname">deletechars</td><td>The characters in the parameter is removed or swaped out from the string. If the table parameter is used this parameter and table needs to be of equal size.</td></tr>
+    <tr><td class="paramname">table</td><td>Optional parameter, if set it is used to swap the characters passed in the deletechars parameter. If not every occurrence of the characters passed in deletechars is removed from the string.</td></tr>
+    <tr><td class="paramname">deletechars</td><td>The characters in the parameter is removed or swapped out from the string. If the table parameter is used this parameter and table needs to be of equal size.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns a pointer to the new string with the deleted/swapped out characters. If the function fails <b>NULL</b> is returned. </dd></dl>
-
+<dl class="section return"><dt>Returns</dt><dd>Returns a pointer to the new string with the deleted/swapped out characters. If the function fails <b>NULL</b> is returned.</dd></dl>
+<p><b>Example</b> </p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">char</span> the_string[] = <span class="stringliteral">&quot;read this short text&quot;</span>;</div>
+<div class="line">    <span class="keywordtype">char</span> *ret_val = NULL;</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#a7f89a8afe71bc042496062c00659aacc">pl_translate</a>(the_string, NULL, <span class="stringliteral">&quot;aeiou&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;the_string: %s\nno table:%s\n&quot;</span>, the_string, ret_val);</div>
+<div class="line">        free(ret_val);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#a7f89a8afe71bc042496062c00659aacc">pl_translate</a>(the_string, <span class="stringliteral">&quot;aeiou&quot;</span>, <span class="stringliteral">&quot;xxxxx&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val != NULL) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;with table: %s\n&quot;</span>, ret_val);</div>
+<div class="line">        free(ret_val);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><b>Output</b> </p>
+<div class="fragment"><div class="line">the_string: read <span class="keyword">this</span> <span class="keywordtype">short</span> text</div>
+<div class="line">no table:rd ths shrt txt</div>
+<div class="line">with table: rxxd thxs shxrt txxt</div>
+</div><!-- fragment --> 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Oct 28 2014 02:09:29 for plstr - Python Like Strings by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 28 2014 04:22:13 for plstr - Python Like Strings by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
