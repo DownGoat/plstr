@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) <2014> <Sindre Smistad>
@@ -23,12 +23,6 @@
  */
 /**
  * @file plstr.c
- *
- * @brief asd
- *
- * @author Sindre Smistad <sindre@downgoat.net>
- *
- * @date 2014.10.25
  */
 
 #include <string.h>
@@ -36,19 +30,59 @@
 
 
 /**
- * @brief This function is a wrapper around strcpy, it copies a string into a
- * buffer. If the destionation argument is NULL a new buffer is allocated,
- * and if it is not NULL the string passed in source is copyed into the
- * destionation buffer.
+ * @brief This function is a wrapper around \a strcpy, it copies a string into a
+ * buffer. If the destination argument is \b NULL a new buffer is allocated,
+ * and if it is not \b NULL the string passed in source is copied into the
+ * destination buffer.
  *
  * @param source This is string you want to copy into the buffer.
  *
- * @param destionation This is the optional destination buffer, if NULL is
+ * @param destination This is the optional destination buffer, if \b NULL is
  * passed a new buffer is allocated and the source is copied into it. If it
- * is not NULL the source will be copied into the destionation buffer.
+ * is not \b NULL the source will be copied into the destination buffer.
  *
  * @return If successful a pointer to buffer is returned. If the function fails
- * NULL is returned.
+ * \b NULL is returned.
+ *
+ * \b Example
+ *
+ * \code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char the_string[] = "This is a short string.";
+    char *copied_str, *pre_alloc;
+
+    copied_str = pl_cpy(the_string, NULL);
+    if (copied_str != NULL) {
+        printf("copied_str: %s\n", copied_str);
+    }
+
+    pre_alloc = (char *) calloc(strlen(the_string) + 1, sizeof(char));
+    if (pre_alloc == NULL) {
+        return 0;
+    }
+
+    if(pl_cpy(the_string, pre_alloc) != NULL) {
+        printf("pre_alloc: %s\n", pre_alloc);
+    }
+
+    free(copied_str);
+    free(pre_alloc);
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+copied_str: This is a short string.
+pre_alloc: This is a short string.
+\endcode
  */
 char *pl_cpy(char *source, char *destination) {
     char *ret_val = NULL, *tmp = destination;
@@ -76,10 +110,10 @@ error_exit:
 
 
 /**
- * @brief This function slices a string using a offset and a limit and returns a
+ * @brief This function slices an string using a offset and a limit and returns a
  * substring. The original string is not manipulated in any way. The function
  * supports the use of both a negative offset and limit. When using a negative
- * value it is offseted from the end of the string.
+ * value it is offsetted from the end of the string.
  *
  * @param source The string you want to slice.
  *
@@ -87,11 +121,55 @@ error_exit:
  *
  * @param limit The limit you want to slice too.
  *
- * @return The function returns a pointer to a allocated buffer containing the
+ * @return The function returns a pointer to an allocated buffer containing the
  * substring if successful. In cases where the limit is smaller than the
- * offset, or if they are equal a NULL pointer is returned. The returned
- * NULL pointer can also be returned if the call to calloc fails, or if the
+ * offset, or if they are equal a \b NULL pointer is returned. The returned
+ * \b NULL pointer can also be returned if the call to calloc fails, or if the
  * offset or limit is outside the range of the string.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+int main() {
+    char the_string[] = "This is a short string.";
+    char **splitted;
+    int size;
+
+    splitted = pl_split(the_string, " ", &size);
+
+    if (splitted != NULL) {
+        int i;
+
+        printf("The size is %d\n", size);
+        for (i = 0; i < size; i++) {
+            printf("splitted[%d] = %s\n", i, splitted[i]);
+        }
+
+        for (i = 0; i < size; i++) {
+            free(splitted[i]);
+        }
+
+        free(splitted);
+    }
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+The size is 5
+splitted[0] = This
+splitted[1] = is
+splitted[2] = a
+splitted[3] = short
+splitted[4] = string.
+\endcode
  */
 char *pl_slice(char *source, int offset, int limit) {
     char *ret_val = NULL, *tmp = NULL;
@@ -159,14 +237,14 @@ error_exit:
 /**
  * @brief This function creates a new buffer that is the size of the two
  * arguments, and both arguments are copied into it. The resulting string
- * is destination+source.
+ * is \a destination+source.
  *
  * @param destination The first string you want to concatenation to.
  *
  * @param source The string you want concatenation destination with.
  *
  * @return Returns a pointer to the new buffer of the concatenation strings.
- * If the function fails NULL is returned.
+ * If the function fails \b NULL is returned.
  */
 char *pl_cat(char *destination, char *source) {
     char *ret_val = NULL, *tmp = NULL;
@@ -199,11 +277,11 @@ error_exit:
 
 
 /**
- * @breif This function splits the string using a delimiter, and puts the
+ * @brief This function splits the string using a delimiter, and puts the
  * results in array of strings. The function differs from the behaviour of
  * strtok, if the delimiter is longer than a single character it splits the
  * string where where the delimeter is found. If the string is
- * "fooasdbarasdmagic" and the delimiter is "asd" the result will be
+ * \a "fooasdbarasdmagic" and the delimiter is \a "asd" the result will be
  * ["foo", "bar", "magic"]. If the delimter is not found, or it is empty string
  * NULL is returned instead. The orignal string is not modified.
  *
@@ -215,7 +293,7 @@ error_exit:
  *
  * @return Returns a array of strings whith the different sub strings if
  * successful. The size argument is set to the size of the returned array.
- * If the function fails NULL is returned.
+ * If the function fails \b NULL is returned.
  */
 char **pl_split(char *string, char *delim, int *size) {
     char **ret_val = NULL, **tmp = NULL, *pch = string, *offset = string;
@@ -305,8 +383,8 @@ error_exit:
  *
  * @param prefix The substring you want to check if the string starts with.
  *
- * @return Returns 1 if the string starts with the prefix, returns 0 if it does
- * not. If the function fails -1 is returned.
+ * @return Returns \b 1 if the string starts with the prefix, returns \b 0 if it
+ * does not. If the function fails \b -1 is returned.
  */
 int pl_startswith(char *string, char *prefix) {
     char *tmp = NULL;
@@ -354,9 +432,9 @@ error_exit:
  *
  * @param postfix The substring you want to check if the string ends with.
  *
- * @return The function returns 1 if the string ends with the postfix. If the
- * string does not end with the postfix 0 is returned. If the function fails
- * -1 is returned.
+ * @return The function returns \b 1 if the string ends with the postfix. If the
+ * string does not end with the postfix \b 0 is returned. If the function fails
+ * \b -1 is returned.
  */
 int pl_endswith(char *string, char *postfix) {
     char *pch = NULL;
@@ -523,18 +601,18 @@ error_exit:
 
 /**
  * @brief This function strips characters from a string. The default behaviour
- * if chars is NULL or empty string is to strip whitespace characters from
- * either end of the string. The characters removed is \n \r \t \v \f and the
- * space character. If the chars parameter contains characters those caracters
- * are removed from either side of the string.
+ * if chars is \b NULL or empty string is to strip whitespace characters from
+ * either end of the string. The characters removed is '\\n \\r \\t \\v \\f' and
+ * the space character. If the chars parameter contains characters those
+ * caracters are removed from either side of the string.
  *
  * @param string The string you want to split.
  *
  * @param chars The characters you want to strip from the string. If the
- * parameter is empty or NULL whitespace is removed from either side.
+ * parameter is empty or \b NULL whitespace is removed from either side.
  *
  * @return The function returns a pointer to the string with the characters
- * removed. If the function fails NULL is returned.
+ * removed. If the function fails \b NULL is returned.
  */
 char *pl_strip(char *string, char *chars) {
     if (string == NULL || strlen(string) == 0) {
@@ -607,7 +685,7 @@ error_exit:
 
 
 /**
- * @bried This function handels the logic for the pl_translate function in the
+ * @brief This function handels the logic for the pl_translate function in the
  * cases where the table parameter is not empty. Do not call this function
  * directly, call pl_translate instead.
  */
@@ -658,21 +736,25 @@ error_exit:
 
 /**
  * @brief This function implements the behaviour of python string translate
- * method. This function has two different behaviours. If the table parameter,
- * is NULL the characters passed in the deletechars parameter are removed from
- * the string. If you pass it the string 'read this short text', and deletechars
- * is 'aeiou', the returned string is 'rd ths shrt txt'.
+ * method. This function has two different behaviours. It either deletes
+ * characters from the string, or switches out the characters with the ones
+ * set in the table.
+ *
+ * If the table parameter, is \b NULL the characters passed in the deletechars
+ * parameter are removed from the string. If you pass it the string
+ * <a> 'read this short text'</a>, and deletechars is \a 'aeiou', the returned
+ * string is <a>'rd ths shrt txt'</a>.
  *
  * If the table parameter is not empty, every occurence of one of the table
  * characters is replaced with the character in deletechars at the same index.
- * So if the same string is passed 'read this short text', and the table is
- * 'xxxxx', and deletechars is 'aeiou' the returned string is
- * 'rxxd thxs shxrt txxt'. The length of the table and deletechars needs to be
- * of the same length, or else the function will return NULL.
+ * So if the same string is passed <a>'read this short text'</a>, and the table
+ * is \a 'xxxxx', and deletechars is \a 'aeiou' the returned string is
+ * <a>'rxxd thxs shxrt txxt'</a>. The length of the table and deletechars needs
+ * to be of the same length, or else the function will return \b NULL.
  *
  * @param string The string you want to translate.
  *
- * @param Optiional table parameter, if set it is used to swap the characters
+ * @param table Optional parameter, if set it is used to swap the characters
  * passed in the deletechars parameter. If not every occurence of the characters
  * passed in deletechars is removed from the string.
  *
@@ -681,7 +763,7 @@ error_exit:
  * needs to be of equal size.
  *
  * @return Returns a pointer to the new string with the deleted/swapped out
- * characters. If the function fails NULL is returned.
+ * characters. If the function fails \b NULL is returned.
  */
 char *pl_translate(char *string, char *table, char *deletechars) {
     if (string == NULL || deletechars == NULL) {
@@ -702,3 +784,5 @@ char *pl_translate(char *string, char *table, char *deletechars) {
 
     return translate_with_table(string, table, deletechars);
 }
+
+
