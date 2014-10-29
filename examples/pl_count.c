@@ -1,5 +1,4 @@
-/**
- * The MIT License (MIT)
+/* The MIT License (MIT)
  *
  * Copyright (c) <2014> <Sindre Smistad>
  *
@@ -21,36 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#ifndef PLSTR_H
-#define PLSTR_H
-
+#include "plstr.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 
-/*****************************************************************
- *                  FUNCTION DEFINITIONS                         *
- *****************************************************************/
+int main() {
+    int ret_val = 0;
 
+    ret_val = pl_count("one three three seven", "three");
+    if (ret_val != -1) {
+        printf("The word 'three' was found %d times.\n", ret_val);
+    }
 
-char *pl_cpy(char *source, char *destination);
+    ret_val = pl_count("What do you get if you multiply six by nine?", "42");
+    if (ret_val == 0) {
+        printf("Apparantly not 42. I always knew something was wrong with the universe.\n");
+    }
 
-char *pl_slice(char *source, int offset, int limit);
-
-char *pl_cat(char *destination, char *source);
-
-char **pl_split(char *string, char *delim, int *size);
-
-int pl_startswith(char *string, char *prefix);
-
-int pl_endswith(char *string, char *postfix);
-
-char *pl_strip(char *string, char *chars);
-
-char *pl_translate(char *string, char *table, char *deletechars);
-
-char **pl_splitlines(char *the_string, int keepends, int *size);
-
-int pl_count(char * the_string, char *word);
-
-#endif /* PLSTR_H */
+    return 0;
+}

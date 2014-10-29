@@ -517,7 +517,7 @@ void test_split_delim_not_found() {
 
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_delim_not_found",
                 "Test 1: NULL not returned."
             );
@@ -540,7 +540,7 @@ void test_split_empty_delim() {
 
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_empty_delim",
                 "Test 1: NULL not returned."
             );
@@ -598,7 +598,7 @@ void test_split_empty_paras() {
     ret_val = pl_split("", " ", &size);
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_empty_paras",
                 "Test 1: NULL not returned."
             );
@@ -606,7 +606,7 @@ void test_split_empty_paras() {
     ret_val = pl_split(NULL, " ", &size);
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_empty_paras",
                 "Test 2: NULL not returned"
             );
@@ -614,7 +614,7 @@ void test_split_empty_paras() {
     ret_val = pl_split("asd asd", "", &size);
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_empty_paras",
                 "Test 3: NULL not returned."
             );
@@ -622,7 +622,7 @@ void test_split_empty_paras() {
     ret_val = pl_split("asd asd", NULL, &size);
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_empty_paras",
                 "Test 4: NULL not returned."
             );
@@ -630,7 +630,7 @@ void test_split_empty_paras() {
     ret_val = pl_split("asd asd", " ", NULL);
     assert_equal_str(
                 NULL,
-                ret_val,
+                (char *) ret_val,
                 "test_split_empty_paras",
                 "Test 5: NULL not returned."
             );
@@ -1113,6 +1113,64 @@ void test_splitlines_empty_params() {
 }
 
 
+void test_count() {
+    int ret_val = 0;
+
+    ret_val = pl_count("one one two three one two four", "one");
+    assert_equal_int(
+                3,
+                ret_val,
+                "test_count",
+                "Test 1: Count not right"
+            );
+
+    ret_val = pl_count("one one two three one two four", "six");
+    assert_equal_int(
+                0,
+                ret_val,
+                "test_count",
+                "Test 2: Count not right"
+            );
+}
+
+
+void test_count_empty_params() {
+    int ret_val = 0;
+
+    ret_val = pl_count("", "One");
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_count_empty_params",
+                "Test 1: Error code not returned."
+            );
+
+    ret_val = pl_count(NULL, "one");
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_count_empty_params",
+                "Test 2: Error code not returned."
+            );
+
+    ret_val = pl_count("one three three seven", "");
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_count_empty_params",
+                "Test 3: Error code not returned."
+            );
+
+    ret_val = pl_count("one three three seven", NULL);
+    assert_equal_int(
+                -1,
+                ret_val,
+                "test_count_empty_params",
+                "Test 4: Error code not returned."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -1153,6 +1211,8 @@ int main () {
     test_splitlines();
     test_splitlines_keepends();
     test_splitlines_empty_params();
+    test_count();
+    test_count_empty_params();
 
     return 0;
 }

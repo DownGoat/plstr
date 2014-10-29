@@ -1179,3 +1179,68 @@ error_exit:
 
     return ret_val;
 }
+
+
+/**
+ * @brief Counts the number of occurences of a word in a string. The word can
+ * does not need to be a word in the english langauge sense, just any form of
+ * sub string can be counted.
+ *
+ * @param the_string The string you wnat to search.
+ *
+ * @param word The sub string you want to search the string for.
+ *
+ * @return Returns the number of occurences of the sub string. If the function
+ * fails \b -1 is returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main() {
+    int ret_val = 0;
+
+    ret_val = pl_count("one three three seven", "three");
+    if (ret_val != -1) {
+        printf("The word 'three' was found %d times.\n", ret_val);
+    }
+
+    ret_val = pl_count("What do you get if you multiply six by nine?", "42");
+    if (ret_val == 0) {
+        printf("Apparantly not 42. I always knew something was wrong with the universe.\n");
+    }
+
+    return 0;
+}
+\endcode
+ * \b Output
+\code{.unparsed}
+The word 'three' was found 2 times.
+Apparantly not 42. I always knew something was wrong with the universe.
+\endcode
+ */
+int pl_count(char * the_string, char *word) {
+    char *pch = the_string;
+    int count = 0, cont = 1;
+
+    if (the_string == NULL || word == NULL) {
+        return -1;
+    }
+
+    if (strlen(the_string) == 0 || strlen(word) == 0) {
+        return -1;
+    }
+
+    do {
+        pch = strstr(pch, word);
+        if (pch != NULL) {
+            pch += strlen(word);
+            count++;
+        }
+    } while(pch != NULL);
+
+    return count;
+}
