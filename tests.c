@@ -998,6 +998,121 @@ void test_translate_empty_params() {
 }
 
 
+void test_splitlines() {
+    char **ret_val = NULL;
+    int size = 0;
+
+    ret_val = pl_splitlines("asd\ndsa\n\rqwe", 0, &size);
+    assert_equal_str(
+                "asd",
+                ret_val[0],
+                "test_splitlines",
+                "Test 1: Strings are not equal"
+            );
+
+    assert_equal_str(
+                "dsa",
+                ret_val[1],
+                "test_splitlines",
+                "Test 2: Strings are not equal."
+            );
+
+    assert_equal_str(
+                "",
+                ret_val[2],
+                "test_splitlines",
+                "Test 3: String is not empty."
+            );
+
+    assert_equal_str(
+                "qwe",
+                ret_val[3],
+                "test_splitlines",
+                "Test 4: Strings are not equal."
+            );
+
+    assert_equal_int(
+                4,
+                size,
+                "test_splitlines",
+                "Test 5: Size not right;"
+            );
+}
+
+
+
+void test_splitlines_keepends() {
+    char **ret_val = NULL;
+    int size = 0;
+
+    ret_val = pl_splitlines("asd\ndsa\n\rqwe", 1, &size);
+    assert_equal_str(
+                "asd\n",
+                ret_val[0],
+                "test_splitlines_keepends",
+                "Test 1: Strings not equal."
+            );
+
+    assert_equal_str(
+                "dsa\n",
+                ret_val[1],
+                "test_splitlines_keepends",
+                "Test 2: Strings not equal."
+            );
+
+    assert_equal_str(
+                "\r",
+                ret_val[2],
+                "test_splitlines_keepends",
+                "Test 3: Strings not equal."
+            );
+
+    assert_equal_str(
+                "qwe",
+                ret_val[3],
+                "test_splitlines_keepends",
+                "Test 4: Strings not equal."
+            );
+
+    assert_equal_int(
+                4,
+                size,
+                "test_splitlines_keepends",
+                "Test 5: Size not right."
+            );
+}
+
+
+void test_splitlines_empty_params() {
+    char **ret_val;
+    int size = 0;
+
+    ret_val = pl_splitlines("", 0, &size);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_splitlines_empty_params",
+                "Test 1: NULL not returned."
+            );
+
+    ret_val = pl_splitlines(NULL, 0, &size);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_splitlines_empty_params",
+                "Test 2: NULL not returned."
+            );
+
+    ret_val = pl_splitlines("shortstringwithnolines", 0, &size);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_splitlines_empty_params",
+                "Test 3: NULL not returned."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -1035,6 +1150,9 @@ int main () {
     test_strip_empty_params();
     test_translate();
     test_translate_empty_params();
+    test_splitlines();
+    test_splitlines_keepends();
+    test_splitlines_empty_params();
 
     return 0;
 }

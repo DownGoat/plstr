@@ -1025,3 +1025,157 @@ char *pl_translate(char *string, char *table, char *deletechars) {
 }
 
 
+/**
+ * @brief This function splits up a string when a newline character is found.
+ *
+ * The function is very similar to the split function but the results are a bit
+ * different. It splits up a string whenever it finds the \a \\n or \a \\r character.
+ * If the keepends parameter is set the function will not remove the newline
+ * from the string.
+ *
+ * If the string <a>"first\nsecond\n\nfourth"</a> is passed the results will be:
+ * <a>["first", "second", "", "fourth"] </a>. If the keepends parameter is set
+ * the results of the same string would be:
+ * <a>["first\n", "second\n", "\n", "fourth\n"]</a>
+ *
+ * This function allocates memory, the returned pointer should be freed after
+ * use.
+ *
+ * @param the_string The string you want to split.
+ *
+ * @param keepends If set to \a 1 the newlines will be appended, if not the
+ * will be removed.
+ *
+ * @param size This parameter will be changed to the size of the returned
+ * string array.
+ *
+ * @return The function will return a array of strings if successful, if the
+ * function fails \b NULL will be returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main() {
+    char **ret_val = NULL;
+    int size = 0;
+
+    ret_val = pl_splitlines("first\nsecond\n\nfourth", 0, &size);
+    if (ret_val != NULL) {
+        int i;
+
+        for (i = 0; i < size; i++) {
+            printf("%d: %s ", i, ret_val[i]);
+            free(ret_val[i]);
+        }
+
+        free(ret_val);
+        printf("\n\n");
+    }
+
+    ret_val = pl_splitlines("first\nsecond\n\nfourth", 1, &size);
+    if (ret_val != NULL ) {
+        int i;
+
+        for (i = 0; i < size; i++) {
+            printf("%d: %s\n", i, ret_val[i]);
+            free(ret_val[i]);
+        }
+
+        printf("\n");
+        free(ret_val);
+    }
+
+    return 0;
+}
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+0: first 1: second 2:  3: fourth
+
+0: first
+
+1: second
+
+2:
+
+3: fourth
+
+\endcode
+ */
+char **pl_splitlines(char *the_string, int keepends, int *size) {
+    char **ret_val = NULL, *pch = NULL, *tmp = NULL;
+    int delims = 0, i, idx = 0;
+
+    if (the_string == NULL || strlen(the_string) == 0)  {
+        goto error_exit;
+    }
+
+    // Count the number of lines.
+    for (i = 0; i < strlen(the_string); i++) {
+        // 10 and 13 is the int value of \n and \r
+        if ((int) the_string[i] == 10 || (int) the_string[i] == 13) {
+            delims++;
+        }
+    }
+
+    // Nothing todo.
+    if (delims == 0) {
+        goto error_exit;
+    }
+
+    ret_val = (char **) calloc(delims + 1, sizeof(char *));
+    if (ret_val == NULL) {
+        goto error_exit;
+    }
+
+
+    pch = the_string;
+    for (i = 0; i < strlen(the_string); i++) {
+        if ((int) the_string[i] == 10 || (int) the_string[i] == 13) {
+            int len = (the_string + i) - pch;
+
+            if (keepends) {
+                len++;
+            }
+
+            tmp = (char *) calloc(len + 1, sizeof(char));
+            if (tmp == NULL) {
+                goto error_exit;
+            }
+
+            strncpy(tmp, pch, len);
+            pch = the_string + i + 1;
+            ret_val[idx] = tmp;
+            idx++;
+        }
+    }
+
+    tmp = (char *) calloc(strlen(pch) + 1, sizeof(char));
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    tmp = strncpy(tmp, pch, strlen(pch));
+    ret_val[delims] = tmp;
+
+    *size = delims + 1;
+
+    return ret_val;
+
+error_exit:
+    if (delims) {
+        for (i = 0; i < delims; i++) {
+            free(ret_val[i]);
+        }
+    }
+
+    free(ret_val);
+    free(tmp);
+
+    return ret_val;
+}

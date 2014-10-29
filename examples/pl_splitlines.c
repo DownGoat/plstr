@@ -21,23 +21,38 @@
  * THE SOFTWARE.
  */
 #include "plstr.h"
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
 
 int main() {
-    char the_string[] = "http://google.com";
-    int ret_val;
+    char **ret_val = NULL;
+    int size = 0;
 
-    ret_val = pl_startswith(the_string, "http://");
-    if (ret_val) {
-        printf("the_string, does indeed start with http://\n");
+    ret_val = pl_splitlines("first\nsecond\n\nfourth", 0, &size);
+    if (ret_val != NULL) {
+        int i;
+
+        for (i = 0; i < size; i++) {
+            printf("%d: %s ", i, ret_val[i]);
+            free(ret_val[i]);
+        }
+
+        free(ret_val);
+        printf("\n\n");
     }
 
-    ret_val = pl_startswith(the_string, "ftp://");
-    if (!ret_val) {
-        printf("And it does not start with ftp://\n");
+    ret_val = pl_splitlines("first\nsecond\n\nfourth", 1, &size);
+    if (ret_val != NULL ) {
+        int i;
+
+        for (i = 0; i < size; i++) {
+            printf("%d: %s\n", i, ret_val[i]);
+            free(ret_val[i]);
+        }
+
+        printf("\n");
+        free(ret_val);
     }
 
     return 0;

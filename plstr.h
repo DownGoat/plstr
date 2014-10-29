@@ -49,4 +49,6 @@ char *pl_strip(char *string, char *chars);
 
 char *pl_translate(char *string, char *table, char *deletechars);
 
+char **pl_splitlines(char *the_string, int keepends, int *size);
+
 #endif /* PLSTR_H */
