@@ -133,6 +133,9 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
 <tr class="memitem:ac61e3c7878c5aebf19c5b28b753bbfe1"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#ac61e3c7878c5aebf19c5b28b753bbfe1">pl_splitlines</a> (char *the_string, int keepends, int *size)</td></tr>
 <tr class="memdesc:ac61e3c7878c5aebf19c5b28b753bbfe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function splits up a string when a newline character is found.  <a href="#ac61e3c7878c5aebf19c5b28b753bbfe1">More...</a><br/></td></tr>
 <tr class="separator:ac61e3c7878c5aebf19c5b28b753bbfe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a062234d1bae5684a7d02ddd63f793fb8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="plstr_8c.html#a062234d1bae5684a7d02ddd63f793fb8">pl_count</a> (char *the_string, char *word)</td></tr>
+<tr class="memdesc:a062234d1bae5684a7d02ddd63f793fb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Counts the number of occurences of a word in a string. The word can does not need to be a word in the english langauge sense, just any form of sub string can be counted.  <a href="#a062234d1bae5684a7d02ddd63f793fb8">More...</a><br/></td></tr>
+<tr class="separator:a062234d1bae5684a7d02ddd63f793fb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="ac7619d6d2ab7b5ea840ecd42fe236458"></a>
@@ -194,6 +197,66 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
 <div class="fragment"><div class="line">foo:foo</div>
 <div class="line">bar:bar</div>
 <div class="line">concatenated:foobar</div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a class="anchor" id="a062234d1bae5684a7d02ddd63f793fb8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int pl_count </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>the_string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>word</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Counts the number of occurences of a word in a string. The word can does not need to be a word in the english langauge sense, just any form of sub string can be counted. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">the_string</td><td>The string you wnat to search.</td></tr>
+    <tr><td class="paramname">word</td><td>The sub string you want to search the string for.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the number of occurences of the sub string. If the function fails <b>-1</b> is returned.</dd></dl>
+<p><b>Example</b> </p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;plstr.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keywordtype">int</span> ret_val = 0;</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#a062234d1bae5684a7d02ddd63f793fb8">pl_count</a>(<span class="stringliteral">&quot;one three three seven&quot;</span>, <span class="stringliteral">&quot;three&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val != -1) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;The word &#39;three&#39; was found %d times.\n&quot;</span>, ret_val);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    ret_val = <a class="code" href="plstr_8c.html#a062234d1bae5684a7d02ddd63f793fb8">pl_count</a>(<span class="stringliteral">&quot;What do you get if you multiply six by nine?&quot;</span>, <span class="stringliteral">&quot;42&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (ret_val == 0) {</div>
+<div class="line">        printf(<span class="stringliteral">&quot;Apparantly not 42. I always knew something was wrong with the universe.\n&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line"></div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><p> <b>Output</b> </p>
+<div class="fragment"><div class="line">The word <span class="stringliteral">&#39;three&#39;</span> was found 2 times.</div>
+<div class="line">Apparantly not 42. I always knew something was wrong with the universe.</div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -785,7 +848,7 @@ char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pl
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 29 2014 16:03:13 for plstr - Python Like Strings by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 29 2014 18:37:03 for plstr - Python Like Strings by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
