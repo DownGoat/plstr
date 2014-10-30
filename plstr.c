@@ -200,7 +200,7 @@ char *pl_slice(char *source, int offset, int limit) {
 
     // Get the right limit if limit is negative
     if (limit < 0) {
-        new_limit = (int) strlen(source) + limit;
+        new_limit = strlen(source) + limit;
     }
 
     else {
@@ -209,7 +209,7 @@ char *pl_slice(char *source, int offset, int limit) {
 
     // Same shit but with the offset.
     if (offset < 0) {
-        new_offset = (int) strlen(source) + offset;
+        new_offset = strlen(source) + offset;
     }
 
     else {
@@ -228,7 +228,7 @@ char *pl_slice(char *source, int offset, int limit) {
     /*
      * Exit if limit or offset points to somewhere outside of the string.
      */
-    if (new_limit > (int) strlen(source) || new_offset > (int) strlen(source)) {
+    if (new_limit > strlen(source) || new_offset > strlen(source)) {
         goto error_exit;
     }
 
@@ -1224,7 +1224,7 @@ Apparantly not 42. I always knew something was wrong with the universe.
  */
 int pl_count(char * the_string, char *word) {
     char *pch = the_string;
-    int count = 0, cont = 1;
+    int count = 0;
 
     if (the_string == NULL || word == NULL) {
         return -1;
@@ -1243,4 +1243,100 @@ int pl_count(char * the_string, char *word) {
     } while(pch != NULL);
 
     return count;
+}
+
+
+/**
+ * @brief This function replaces tabs with spaces.
+ *
+ * The tabs are replaced with the number of spaces in specified in the
+ * \a tabsize parameter. There is no default value for the tabsize, so a value
+ * needs to be passed. The resulting string is put in a heap allocated buffer,
+ * the buffer should be freed after use.
+ *
+ * @param the_string The string with tabs.
+ *
+ * @param tabsize The number of spaces you want to replace each tab with.
+ *
+ * @return The function returns a heap allocated buffer of the string with tabs
+ * replaced. If the function fails \b NULL is returned.
+ *
+ * \b Example
+\code{.c}
+#include "plstr.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main() {
+    char *ret_val;
+
+    ret_val = pl_expandtabs("tabs\tinstead\tof\tspace", 1);
+    if (ret_val != NULL) {
+        printf("tabs\tinstead\tof\tspace\n%s\n", ret_val);
+    }
+
+    free(ret_val);
+
+    return 0;
+}
+
+\endcode
+ *
+ * \b Output
+\code{.unparsed}
+tabs    instead of      space
+tabs instead of space
+\endcode
+ */
+
+char *pl_expandtabs(char *the_string, int tabsize) {
+    char *tmp = NULL, *ret_val = NULL;
+    int i, tabcount = 0, str_size, idx;
+
+    if (the_string == NULL || strlen(the_string) == 0 || tabsize < 0) {
+        goto error_exit;
+    }
+
+    for (i = 0; i < strlen(the_string); i++) {
+        // 9 is tab int value.
+        if (the_string[i] == 9) {
+            tabcount++;
+        }
+    }
+
+    if (!tabcount) {
+        goto error_exit;
+    }
+
+    str_size = (tabcount * tabsize) + strlen(the_string) + 1;
+    tmp = (char *) calloc(str_size, sizeof(char));
+    if (tmp == NULL) {
+        goto error_exit;
+    }
+
+    idx = 0;
+    for (i = 0; i < strlen(the_string); i++) {
+        if (the_string[i] == 9) {
+            int x;
+            for (x = 0; x < tabsize; x++) {
+                tmp[idx] = ' ';
+                idx++;
+            }
+        }
+
+        else {
+            tmp[idx] = the_string[i];
+            idx++;
+        }
+    }
+
+    ret_val = tmp;
+
+    return ret_val;
+
+error_exit:
+    free(tmp);
+
+    return ret_val;
 }

@@ -1171,6 +1171,64 @@ void test_count_empty_params() {
 }
 
 
+void test_expandtabs() {
+    char *ret_val;
+
+    ret_val = pl_expandtabs("this is a\ttabbed\t\tstring", 2);
+    assert_equal_str(
+                "this is a  tabbed    string",
+                ret_val,
+                "test_expandtabs",
+                "Test 1: Strings are not equal."
+            );
+
+    ret_val = pl_expandtabs("\t", 10);
+    assert_equal_str(
+                "          ",
+                ret_val,
+                "test_expandtabs",
+                "Test 2: Strings are not equal."
+            );
+
+    ret_val = pl_expandtabs("asd\tdsa", 0);
+    assert_equal_str(
+                "asddsa",
+                ret_val,
+                "test_expandtabs",
+                "Test 3: Strings are not equal."
+            );
+}
+
+
+void test_expandtabs_no_params() {
+    char *ret_val;
+
+    ret_val = pl_expandtabs("", 5);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_expandtabs_no_params",
+                "Test 1: NULL not retruned."
+            );
+
+    ret_val = pl_expandtabs(NULL, 0);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_expandtabs_no_params",
+                "Test 2: NULL not returned."
+            );
+
+    ret_val = pl_expandtabs("asd\t", -1);
+    assert_equal_pointers(
+                NULL,
+                ret_val,
+                "test_expandtabs_no_params",
+                "Test 3: NULL not returned."
+            );
+}
+
+
 int main () {
 
     test_slice_positive_sub_str();
@@ -1213,6 +1271,8 @@ int main () {
     test_splitlines_empty_params();
     test_count();
     test_count_empty_params();
+    test_expandtabs();
+    test_expandtabs_no_params();
 
     return 0;
 }

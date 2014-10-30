@@ -53,4 +53,6 @@ char **pl_splitlines(char *the_string, int keepends, int *size);
 
 int pl_count(char * the_string, char *word);
 
+char *pl_expandtabs(char *the_string, int tabsize);
+
 #endif /* PLSTR_H */
