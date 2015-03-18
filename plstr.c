@@ -193,14 +193,22 @@ sliced 0,-10: subderm
 char *pl_slice(char *source, int offset, int limit) {
     char *ret_val = NULL, *tmp = NULL;
     int i, tmp_count = 0, new_limit, new_offset;
+    int source_length = 0;
 
-    if (source == NULL || strlen(source) == 0) {
+
+    if (source == NULL) {
+        goto error_exit;
+    }
+
+    source_length = strlen(source);
+
+    if (source_length == 0) {
         goto error_exit;
     }
 
     // Get the right limit if limit is negative
     if (limit < 0) {
-        new_limit = strlen(source) + limit;
+        new_limit = source_length + limit;
     }
 
     else {
@@ -209,7 +217,7 @@ char *pl_slice(char *source, int offset, int limit) {
 
     // Same shit but with the offset.
     if (offset < 0) {
-        new_offset = strlen(source) + offset;
+        new_offset = source_length + offset;
     }
 
     else {
@@ -228,7 +236,7 @@ char *pl_slice(char *source, int offset, int limit) {
     /*
      * Exit if limit or offset points to somewhere outside of the string.
      */
-    if (new_limit > strlen(source) || new_offset > strlen(source)) {
+    if (new_limit > source_length || new_offset > source_length) {
         goto error_exit;
     }
 
@@ -398,12 +406,19 @@ splitted[4] = string.
 char **pl_split(char *string, char *delim, int *size) {
     char **ret_val = NULL, **tmp = NULL, *pch = string, *offset = string;
     int i = 0, delims = 0;
+    int delim_length = 0;
 
     if (string == NULL || strlen(string) == 0) {
         return NULL;
     }
 
-    if (delim == NULL || strlen(delim) == 0) {
+    if (delim == NULL) {
+        return NULL;
+    }
+
+    delim_length = strlen(delim);
+
+    if (delim_length == 0) {
         return NULL;
     }
 
@@ -418,7 +433,7 @@ char **pl_split(char *string, char *delim, int *size) {
         if (pch != NULL) {
             delims++;
 
-            pch = pch + strlen(delim);
+            pch = pch + delim_length;
         }
     } while (pch != NULL);
 
@@ -446,7 +461,7 @@ char **pl_split(char *string, char *delim, int *size) {
 
         strncpy(sub_str, offset, pch - offset);
 
-        pch += strlen(delim);
+        pch += delim_length;
         offset = pch;
         tmp[i] = sub_str;
     }
@@ -520,21 +535,28 @@ And it does not start with ftp://
 int pl_startswith(char *string, char *prefix) {
     char *tmp = NULL;
     int ret_val = -1;
+    int prefix_length = 0;
 
     if (string == NULL || prefix == NULL) {
         goto error_exit;
     }
 
-    if (strlen(string) == 0 || strlen(prefix) == 0) {
+    if (strlen(string) == 0) {
         goto error_exit;
     }
 
-    tmp = (char *) calloc(strlen(prefix) + 1, sizeof(char));
+    prefix_length = strlen(prefix);
+
+    if (prefix_length == 0) {
+        goto error_exit;
+    }
+
+    tmp = (char *) calloc(prefix_length + 1, sizeof(char));
     if (tmp == NULL) {
         goto error_exit;
     }
 
-    tmp = strncpy(tmp, string, strlen(prefix));
+    tmp = strncpy(tmp, string, prefix_length);
 
     if (!strcmp(tmp, prefix)) {
         ret_val = 1;
@@ -602,16 +624,20 @@ And it does not end with .net
 int pl_endswith(char *string, char *postfix) {
     char *pch = NULL;
     int ret_val = -1;
+    int string_length = 0, postfix_length = 0;
 
     if (string == NULL || postfix == NULL) {
         goto error_exit;
     }
 
-    if (strlen(string) == 0 || strlen(postfix) == 0) {
+    string_length = strlen(string);
+    postfix_length = strlen(postfix);
+
+    if (string_length == 0 || postfix_length == 0) {
         goto error_exit;
     }
 
-    pch = string + strlen(string) - strlen(postfix);
+    pch = string + string_length - postfix_length;
 
     if (!strcmp(pch, postfix)) {
         ret_val = 1;
@@ -633,15 +659,22 @@ error_exit:
  * @brief This function handls the logic for the pl_split function for the cases
  * where the chars parameter is empty.
  */
-char *strip_empty_chars(char *string) {
+static char *strip_empty_chars(char *string) {
     char *offset = NULL, *limit = NULL, *ret_val;
     int i;
+    int string_length = 0;
 
-    if (string == NULL || strlen(string) == 0) {
+    if (string == NULL)  {
         goto error_exit;
     }
 
-    for (i = 0; i < strlen(string); i++) {
+    string_length = strlen(string);
+
+    if (string_length == 0) {
+        goto error_exit;
+    }
+
+    for (i = 0; i < string_length; i++) {
         switch ((int) string[i]) {
             case 9:
                 break;
@@ -657,13 +690,13 @@ char *strip_empty_chars(char *string) {
                 break;
             default:
                 offset = string + i;
-                i = strlen(string);
+                i = string_length;
                 break;
         }
     }
 
     // Cannot start comparison at the null terminator.
-    for (i = strlen(string) - 1; i >= 0; i--) {
+    for (i = string_length - 1; i >= 0; i--) {
         switch ((int) string[i]) {
             case 9:
                 break;
@@ -704,20 +737,24 @@ error_exit:
  * @brief This is function handels logic for the pl_strip function when the
  * chars parameter is not empty.
  */
-char *strip_with_chars(char *string, char *chars) {
+static char *strip_with_chars(char *string, char *chars) {
     char *ret_val = NULL, *offset = NULL, *limit = NULL;
     int i, x, found = 0;
+    int string_length = 0, chars_length = 0;
 
     if (string == NULL || chars == NULL) {
         goto error_exit;
     }
 
-    if (strlen(string) == 0 || strlen(chars) == 0) {
+    string_length = strlen(string);
+    chars_length = strlen(chars);
+
+    if (string_length == 0 || chars_length == 0) {
         goto error_exit;
     }
 
-    for (i = 0; i < strlen(string); i++) {
-        for (x = 0; x < strlen(chars); x++) {
+    for (i = 0; i < string_length; i++) {
+        for (x = 0; x < chars_length; x++) {
             if (string[i] == chars[x]) {
                 found = 1;
             }
@@ -733,8 +770,8 @@ char *strip_with_chars(char *string, char *chars) {
 
     found = 0;
     // Cant start comparing the null terminator as it is not striped.
-    for (i = strlen(string) - 1; i >= 0; i--) {
-        for (x = 0; x < strlen(chars); x++) {
+    for (i = string_length - 1; i >= 0; i--) {
+        for (x = 0; x < chars_length; x++) {
             if (string[i] == chars[x]) {
                 found = 1;
             }
@@ -834,36 +871,40 @@ char *pl_strip(char *string, char *chars) {
  * table. It should not be called directly, call pl_translate with the table
  * parameter set as NULL instead.
  */
-char *translate_no_table(char *string, char *deletechars) {
+static char *translate_no_table(char *string, char *deletechars) {
     char *tmp = NULL, *ret_val = NULL;
     int i, x, found = 0, idx = 0;
+    int string_length = 0, deletechars_length = 0;
 
     if (string == NULL || deletechars == NULL) {
         goto error_exit;
     }
 
-    if (strlen(string) == 0 || strlen(deletechars) == 0) {
+    string_length = strlen(string);
+    deletechars_length = strlen(deletechars);
+
+    if (string_length == 0 || deletechars_length == 0) {
         goto error_exit;
     }
 
-   for (i = 0; i < strlen(string); i++) {
-        for (x = 0; x < strlen(deletechars); x++) {
+   for (i = 0; i < string_length; i++) {
+        for (x = 0; x < deletechars_length; x++) {
             if (string[i] == deletechars[x]) {
                 found++;
             }
         }
     }
 
-    tmp = (char *) calloc(strlen(string) - found + 1, sizeof(char));
+    tmp = (char *) calloc(string_length - found + 1, sizeof(char));
     if (tmp == NULL) {
         goto error_exit;
     }
 
 
-    for (i = 0; i < strlen(string); i++) {
+    for (i = 0; i < string_length; i++) {
         int delete = 0;
 
-        for (x = 0; x < strlen(deletechars); x++) {
+        for (x = 0; x < deletechars_length; x++) {
             if (string[i] == deletechars[x]) {
                 delete = 1;
             }
@@ -891,7 +932,7 @@ error_exit:
  * cases where the table parameter is not empty. Do not call this function
  * directly, call pl_translate instead.
  */
-char *translate_with_table(char *string, char *table, char *deletechars) {
+static char *translate_with_table(char *string, char *table, char *deletechars) {
     char *tmp = NULL, *ret_val = NULL;
     char swap_table[256];
     int i;
@@ -1110,13 +1151,20 @@ int main() {
 char **pl_splitlines(char *the_string, int keepends, int *size) {
     char **ret_val = NULL, *pch = NULL, *tmp = NULL;
     int delims = 0, i, idx = 0;
+    int string_length = 0;
 
-    if (the_string == NULL || strlen(the_string) == 0)  {
+    if (the_string == NULL) {
+        goto error_exit;
+    }
+
+    string_length = strlen(the_string);
+
+    if (string_length == 0) {
         goto error_exit;
     }
 
     // Count the number of lines.
-    for (i = 0; i < strlen(the_string); i++) {
+    for (i = 0; i < string_length; i++) {
         // 10 and 13 is the int value of \n and \r
         if ((int) the_string[i] == 10 || (int) the_string[i] == 13) {
             delims++;
@@ -1135,7 +1183,7 @@ char **pl_splitlines(char *the_string, int keepends, int *size) {
 
 
     pch = the_string;
-    for (i = 0; i < strlen(the_string); i++) {
+    for (i = 0; i < string_length; i++) {
         if ((int) the_string[i] == 10 || (int) the_string[i] == 13) {
             int len = (the_string + i) - pch;
 
@@ -1293,12 +1341,19 @@ tabs instead of space
 char *pl_expandtabs(char *the_string, int tabsize) {
     char *tmp = NULL, *ret_val = NULL;
     int i, tabcount = 0, str_size, idx;
+    int string_length = 0;
 
-    if (the_string == NULL || strlen(the_string) == 0 || tabsize < 0) {
+    if (the_string == NULL || tabsize < 0) {
         goto error_exit;
     }
 
-    for (i = 0; i < strlen(the_string); i++) {
+    string_length = strlen(the_string);
+
+    if (string_length == 0) {
+        goto error_exit;
+    }
+
+    for (i = 0; i < string_length; i++) {
         // 9 is tab int value.
         if (the_string[i] == 9) {
             tabcount++;
@@ -1309,14 +1364,14 @@ char *pl_expandtabs(char *the_string, int tabsize) {
         goto error_exit;
     }
 
-    str_size = (tabcount * tabsize) + strlen(the_string) + 1;
+    str_size = (tabcount * tabsize) + string_length + 1;
     tmp = (char *) calloc(str_size, sizeof(char));
     if (tmp == NULL) {
         goto error_exit;
     }
 
     idx = 0;
-    for (i = 0; i < strlen(the_string); i++) {
+    for (i = 0; i < string_length; i++) {
         if (the_string[i] == 9) {
             int x;
             for (x = 0; x < tabsize; x++) {
