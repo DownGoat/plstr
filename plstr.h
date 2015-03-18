@@ -33,26 +33,16 @@
  *****************************************************************/
 
 
-char *pl_cpy(char *source, char *destination);
-
-char *pl_slice(char *source, int offset, int limit);
-
-char *pl_cat(char *destination, char *source);
-
-char **pl_split(char *string, char *delim, int *size);
-
-int pl_startswith(char *string, char *prefix);
-
-int pl_endswith(char *string, char *postfix);
-
-char *pl_strip(char *string, char *chars);
-
-char *pl_translate(char *string, char *table, char *deletechars);
-
-char **pl_splitlines(char *the_string, int keepends, int *size);
-
-int pl_count(char * the_string, char *word);
-
-char *pl_expandtabs(char *the_string, int tabsize);
+char    *pl_cpy(char *, char *);
+char    *pl_slice(char *, int, int);
+char    *pl_cat(char *, char *);
+char    **pl_split(char *, char *, int *);
+int     pl_startswith(char *, char *);
+int     pl_endswith(char *, char *);
+char    *pl_strip(char *, char *);
+char    *pl_translate(char *, char *, char *);
+char    **pl_splitlines(char *, int , int *);
+int     pl_count(char *, char *);
+char    *pl_expandtabs(char *, int);
 
 #endif /* PLSTR_H */
