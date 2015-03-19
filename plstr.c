@@ -191,22 +191,20 @@ sliced 0,-10: subderm
 \endcode
  */
 char *pl_slice(char *source, int offset, int limit) {
-    char *ret_val = NULL, *tmp = NULL;
-    int i, tmp_count = 0, new_limit, new_offset;
     int source_length = 0;
 
-
     if (source == NULL) {
-        goto error_exit;
+        return NULL;
     }
 
     source_length = strlen(source);
 
     if (source_length == 0) {
-        goto error_exit;
+        return NULL;
     }
 
     // Get the right limit if limit is negative
+    int new_limit;
     if (limit < 0) {
         new_limit = source_length + limit;
     }
@@ -216,6 +214,7 @@ char *pl_slice(char *source, int offset, int limit) {
     }
 
     // Same shit but with the offset.
+    int new_offset;
     if (offset < 0) {
         new_offset = source_length + offset;
     }
@@ -229,35 +228,24 @@ char *pl_slice(char *source, int offset, int limit) {
      * If the limit is less than the offset there is no characters to slice,
      * same if they are equal.
      */
-    if (new_limit < new_offset || (new_limit - new_offset) == 0) {
-        goto error_exit;
+    if (new_limit < new_offset || (new_limit - new_offset) == 0 ||
+        // Exit if limit or offset points to somewhere outside of the string.
+        new_limit > source_length || new_offset > source_length) {
+        return NULL;
     }
 
-    /*
-     * Exit if limit or offset points to somewhere outside of the string.
-     */
-    if (new_limit > source_length || new_offset > source_length) {
-        goto error_exit;
-    }
-
-    tmp = (char *) calloc((new_limit - new_offset) + 1, sizeof(char));
+    char *tmp = (char *) calloc((new_limit - new_offset) + 1, sizeof(char));
     if (tmp == NULL) {
-        goto error_exit;
+        return NULL;
     }
 
-    for(i = new_offset; i < new_limit; i++) {
+    int tmp_count = 0;
+    for(int i = new_offset; i < new_limit; i++) {
         tmp[tmp_count] = source[i];
         tmp_count++;
     }
 
-    ret_val = tmp;
-
-    return ret_val;
-
-error_exit:
-    free(tmp);
-
-    return ret_val;
+    return tmp;
 }
 
 
@@ -404,29 +392,22 @@ splitted[4] = string.
 \endcode
  */
 char **pl_split(char *string, char *delim, int *size) {
-    char **ret_val = NULL, **tmp = NULL, *pch = string, *offset = string;
-    int i = 0, delims = 0;
-    int delim_length = 0;
+    char **ret_val = NULL;
 
-    if (string == NULL || strlen(string) == 0) {
+    if (string == NULL || strlen(string) == 0 || delim == NULL
+        || size == NULL) {
         return NULL;
     }
 
-    if (delim == NULL) {
-        return NULL;
-    }
-
-    delim_length = strlen(delim);
+    int delim_length = strlen(delim);
 
     if (delim_length == 0) {
         return NULL;
     }
 
-    if (size == NULL) {
-        return NULL;
-    }
-
     // Count the number of occurences of the sub str.
+    char *pch = string;
+    int delims = 0;
     do {
         pch = strstr(pch, delim);
 
@@ -441,14 +422,14 @@ char **pl_split(char *string, char *delim, int *size) {
         return NULL;
     }
 
-    tmp = (char **) calloc(delims + 1, sizeof(char *));
+    char **tmp = (char **) calloc(delims + 1, sizeof(char *));
     if (tmp == NULL) {
-        goto error_exit;
+        return NULL;
     }
 
     pch = string;
-    offset = string;
-
+    char *offset = string;
+    int i;
     for (i = 0; i < delims; i++) {
         char *sub_str = NULL;
 
@@ -481,7 +462,7 @@ char **pl_split(char *string, char *delim, int *size) {
     return ret_val;
 
 error_exit:
-    for(i = 0; i < (delims + 1); i++) {
+    for(int i = 0; i < (delims + 1); i++) {
         free(tmp[i]);
     }
 
@@ -676,17 +657,17 @@ static char *strip_empty_chars(char *string) {
 
     for (i = 0; i < string_length; i++) {
         switch ((int) string[i]) {
-            case 9:
+            case '\n':
                 break;
-            case 10:
+            case '\r':
                 break;
-            case 11:
+            case '\t':
                 break;
-            case 12:
+            case '\v':
                 break;
-            case 13:
+            case '\f':
                 break;
-            case 32:
+            case ' ':
                 break;
             default:
                 offset = string + i;
@@ -698,17 +679,17 @@ static char *strip_empty_chars(char *string) {
     // Cannot start comparison at the null terminator.
     for (i = string_length - 1; i >= 0; i--) {
         switch ((int) string[i]) {
-            case 9:
+            case '\n':
                 break;
-            case 10:
+            case '\r':
                 break;
-            case 11:
+            case '\t':
                 break;
-            case 12:
+            case '\v':
                 break;
-            case 13:
+            case '\f':
                 break;
-            case 32:
+            case ' ':
                 break;
             default:
                 limit = string + i;
@@ -872,39 +853,37 @@ char *pl_strip(char *string, char *chars) {
  * parameter set as NULL instead.
  */
 static char *translate_no_table(char *string, char *deletechars) {
-    char *tmp = NULL, *ret_val = NULL;
-    int i, x, found = 0, idx = 0;
-    int string_length = 0, deletechars_length = 0;
-
-    if (string == NULL || deletechars == NULL) {
-        goto error_exit;
+    if (string == NULL || deletechars == NULL ||
+        strlen(string) == 0 || strlen(deletechars) == 0) {
+        return NULL;
     }
+
+    int string_length = 0, deletechars_length = 0;
 
     string_length = strlen(string);
     deletechars_length = strlen(deletechars);
 
-    if (string_length == 0 || deletechars_length == 0) {
-        goto error_exit;
-    }
-
-   for (i = 0; i < string_length; i++) {
-        for (x = 0; x < deletechars_length; x++) {
+    int found = 0;
+    for (int i = 0; i < string_length; i++) {
+        for (int x = 0; x < deletechars_length; x++) {
             if (string[i] == deletechars[x]) {
                 found++;
             }
         }
     }
 
-    tmp = (char *) calloc(string_length - found + 1, sizeof(char));
+
+    char *tmp = (char *) calloc(string_length - found + 1, sizeof(char));
     if (tmp == NULL) {
-        goto error_exit;
+        return NULL;
     }
 
 
-    for (i = 0; i < string_length; i++) {
+    int idx = 0;
+    for (int i = 0; i < string_length; i++) {
         int delete = 0;
 
-        for (x = 0; x < deletechars_length; x++) {
+        for (int x = 0; x < deletechars_length; x++) {
             if (string[i] == deletechars[x]) {
                 delete = 1;
             }
@@ -916,14 +895,7 @@ static char *translate_no_table(char *string, char *deletechars) {
         }
     }
 
-    ret_val = tmp;
-
-    return ret_val;
-
-error_exit:
-    free(tmp);
-
-    return ret_val;
+    return tmp;
 }
 
 
@@ -1166,7 +1138,7 @@ char **pl_splitlines(char *the_string, int keepends, int *size) {
     // Count the number of lines.
     for (i = 0; i < string_length; i++) {
         // 10 and 13 is the int value of \n and \r
-        if ((int) the_string[i] == 10 || (int) the_string[i] == 13) {
+        if ((int) the_string[i] == '\n' || (int) the_string[i] == '\r') {
             delims++;
         }
     }
@@ -1184,7 +1156,7 @@ char **pl_splitlines(char *the_string, int keepends, int *size) {
 
     pch = the_string;
     for (i = 0; i < string_length; i++) {
-        if ((int) the_string[i] == 10 || (int) the_string[i] == 13) {
+        if ((int) the_string[i] == '\n' || (int) the_string[i] == '\r') {
             int len = (the_string + i) - pch;
 
             if (keepends) {
@@ -1355,7 +1327,7 @@ char *pl_expandtabs(char *the_string, int tabsize) {
 
     for (i = 0; i < string_length; i++) {
         // 9 is tab int value.
-        if (the_string[i] == 9) {
+        if (the_string[i] == '\t') {
             tabcount++;
         }
     }
@@ -1372,7 +1344,7 @@ char *pl_expandtabs(char *the_string, int tabsize) {
 
     idx = 0;
     for (i = 0; i < string_length; i++) {
-        if (the_string[i] == 9) {
+        if (the_string[i] == '\t') {
             int x;
             for (x = 0; x < tabsize; x++) {
                 tmp[idx] = ' ';

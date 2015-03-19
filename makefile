@@ -1,7 +1,7 @@
 TARGET = plstr
 LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall -ggdb
+CFLAGS = -g -Wall -ggdb -std=c99
 
 .PHONY: default all clean
 
