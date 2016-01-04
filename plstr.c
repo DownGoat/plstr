@@ -863,34 +863,27 @@ static char *translate_no_table(char *string, char *deletechars) {
     string_length = strlen(string);
     deletechars_length = strlen(deletechars);
 
-    int found = 0;
-    for (int i = 0; i < string_length; i++) {
-        for (int x = 0; x < deletechars_length; x++) {
-            if (string[i] == deletechars[x]) {
-                found++;
-            }
-        }
+    int swap_table[256];
+    for (int i = 0; i < 256; i++) {
+        swap_table[i] = i;
     }
 
+    for (int i = 0; i < deletechars_length; i++) {
+        swap_table[(int) deletechars[i]] = -1;
+    }
 
-    char *tmp = (char *) calloc(string_length - found + 1, sizeof(char));
+    char *tmp = tmp = calloc(string_length + 1, sizeof(char));
     if (tmp == NULL) {
         return NULL;
     }
 
-
-    int idx = 0;
-    for (int i = 0; i < string_length; i++) {
-        int delete = 0;
-
-        for (int x = 0; x < deletechars_length; x++) {
-            if (string[i] == deletechars[x]) {
-                delete = 1;
-            }
-        }
-
-        if (!delete) {
-            tmp[idx] = string[i];
+    /*
+    Need a seperate variable to write to the right index of the buffer.
+    Using i would lead to skipping over a byte which will be null. \0
+    */
+    for (int i = 0, idx = 0; i < string_length; i++) {
+        if (swap_table[(int) string[i]] != -1) {
+            tmp[idx] = (char) swap_table[(int) string[i]];
             idx++;
         }
     }
@@ -904,48 +897,46 @@ static char *translate_no_table(char *string, char *deletechars) {
  * cases where the table parameter is not empty. Do not call this function
  * directly, call pl_translate instead.
  */
-static char *translate_with_table(char *string, char *table, char *deletechars) {
-    char *tmp = NULL, *ret_val = NULL;
-    char swap_table[256];
-    int i;
-
+static char *translate_with_table(char *string, unsigned char *table, char *deletechars) {
     if (string == NULL || table == NULL || deletechars == NULL) {
         goto error_exit;
     }
 
-    if (strlen(string) == 0 || strlen(table) == 0 || strlen(deletechars) == 0) {
+    int string_length = strlen(string);
+    int table_length = strlen(table);
+    int deletechars_length = strlen(deletechars);
+    if (string_length == 0 || table_length == 0 || deletechars_length == 0) {
         goto error_exit;
     }
 
-    if (strlen(table) != strlen(deletechars)) {
+    if (table_length != deletechars_length) {
         goto error_exit;
     }
 
-    for (i = 0; i < 256; i++) {
+    char swap_table[256];
+    for (int i = 0; i < 256; i++) {
         swap_table[i] = i;
     }
 
-    for (i = 0; i < strlen(table); i++) {
+    for (int i = 0; i < table_length; i++) {
         swap_table[(int) table[i]] = deletechars[i];
     }
 
-    tmp = pl_cpy(string, NULL);
+    char *tmp = pl_cpy(string, NULL);
     if (tmp == NULL) {
         goto error_exit;
     }
 
-    for (i = 0; i < strlen(tmp); i++) {
+    for (int i = 0; i < string_length; i++) {
         tmp[i] = swap_table[(int) tmp[i]];
     }
 
-    ret_val = tmp;
-
-    return ret_val;
+    return tmp;
 
 error_exit:
     free(tmp);
 
-    return ret_val;
+    return NULL;
 }
 
 
