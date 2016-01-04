@@ -863,27 +863,34 @@ static char *translate_no_table(char *string, char *deletechars) {
     string_length = strlen(string);
     deletechars_length = strlen(deletechars);
 
-    int swap_table[256];
-    for (int i = 0; i < 256; i++) {
-        swap_table[i] = i;
+    int found = 0;
+    for (int i = 0; i < string_length; i++) {
+        for (int x = 0; x < deletechars_length; x++) {
+            if (string[i] == deletechars[x]) {
+                found++;
+            }
+        }
     }
 
-    for (int i = 0; i < deletechars_length; i++) {
-        swap_table[(int) deletechars[i]] = -1;
-    }
 
-    char *tmp = tmp = calloc(string_length + 1, sizeof(char));
+    char *tmp = (char *) calloc(string_length - found + 1, sizeof(char));
     if (tmp == NULL) {
         return NULL;
     }
 
-    /*
-    Need a seperate variable to write to the right index of the buffer.
-    Using i would lead to skipping over a byte which will be null. \0
-    */
-    for (int i = 0, idx = 0; i < string_length; i++) {
-        if (swap_table[(int) string[i]] != -1) {
-            tmp[idx] = (char) swap_table[(int) string[i]];
+
+    int idx = 0;
+    for (int i = 0; i < string_length; i++) {
+        int delete = 0;
+
+        for (int x = 0; x < deletechars_length; x++) {
+            if (string[i] == deletechars[x]) {
+                delete = 1;
+            }
+        }
+
+        if (!delete) {
+            tmp[idx] = string[i];
             idx++;
         }
     }
@@ -898,45 +905,47 @@ static char *translate_no_table(char *string, char *deletechars) {
  * directly, call pl_translate instead.
  */
 static char *translate_with_table(char *string, unsigned char *table, char *deletechars) {
+    char *tmp = NULL, *ret_val = NULL;
+    char swap_table[256];
+    int i;
+
     if (string == NULL || table == NULL || deletechars == NULL) {
         goto error_exit;
     }
 
-    int string_length = strlen(string);
-    int table_length = strlen(table);
-    int deletechars_length = strlen(deletechars);
-    if (string_length == 0 || table_length == 0 || deletechars_length == 0) {
+    if (strlen(string) == 0 || strlen(table) == 0 || strlen(deletechars) == 0) {
         goto error_exit;
     }
 
-    if (table_length != deletechars_length) {
+    if (strlen(table) != strlen(deletechars)) {
         goto error_exit;
     }
 
-    char swap_table[256];
-    for (int i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++) {
         swap_table[i] = i;
     }
 
-    for (int i = 0; i < table_length; i++) {
+    for (i = 0; i < strlen(table); i++) {
         swap_table[(int) table[i]] = deletechars[i];
     }
 
-    char *tmp = pl_cpy(string, NULL);
+    tmp = pl_cpy(string, NULL);
     if (tmp == NULL) {
         goto error_exit;
     }
 
-    for (int i = 0; i < string_length; i++) {
+    for (i = 0; i < strlen(tmp); i++) {
         tmp[i] = swap_table[(int) tmp[i]];
     }
 
-    return tmp;
+    ret_val = tmp;
+
+    return ret_val;
 
 error_exit:
     free(tmp);
 
-    return NULL;
+    return ret_val;
 }
 
 
@@ -1257,17 +1266,29 @@ int pl_count(char * the_string, char *word) {
 }
 
 
+static int next_column(int position, int tabsize) {
+    if (tabsize == 0) {
+        return 0;
+    }
+
+    return tabsize - (position % tabsize);
+}
+
+
 /**
  * @brief This function replaces tabs with spaces.
  *
- * The tabs are replaced with the number of spaces in specified in the
- * \a tabsize parameter. There is no default value for the tabsize, so a value
- * needs to be passed. The resulting string is put in a heap allocated buffer,
- * the buffer should be freed after use.
+ * The tabs are replaced with spaces ' ' up to the next column. The column width
+ * is specified by the \a tabsize parameter, and the number of spaces inserted 
+ * for each tab is the number of spaces needed to reach the next multiple of 
+ * tabsize. The returned string is allocated on the heap, remember to free this
+ * resource after use. NULL is returned in the follwoing cases: The passed string
+ * points to NULL. \a tabsize has a negative value. Or the string has a length of
+ * zero.
  *
  * @param the_string The string with tabs.
  *
- * @param tabsize The number of spaces you want to replace each tab with.
+ * @param tabsize The width of the column.
  *
  * @return The function returns a heap allocated buffer of the string with tabs
  * replaced. If the function fails \b NULL is returned.
@@ -1300,7 +1321,58 @@ tabs    instead of      space
 tabs instead of space
 \endcode
  */
+char *pl_expandtabs(char *the_string, int tabsize) {
+    char *ret_val = NULL;
+    if (the_string == NULL || tabsize < 0) {
+        goto error_exit;
+    }
+    
+    int str_len = strlen(the_string);
+    
+    if (str_len == 0) {
+        goto error_exit;
+    }
+    
+    int extra_size = 0;
+    
+    for (int i = 0; i < str_len; i++) {
+        if (the_string[i] == '\t') {
+            if (tabsize != 0) {
+                extra_size += i % tabsize;
+            }
+            
+            else {
+                extra_size--; // Save a byte!
+            }
+        }
+    }
+    
+    ret_val = (char *) calloc(str_len + extra_size + 1, sizeof(char));
+    if (ret_val == NULL) {
+        goto error_exit;
+    }
+    
+    for (int i = 0, idx = 0; i < str_len; i++) {
+        if (the_string[i] != '\t') {
+            ret_val[idx] = the_string[i];
+            idx++;
+        }
+        
+        else {
+            int spaces = next_column(idx, tabsize);
+            for (int x = 0; x < spaces; x++) {
+                ret_val[idx] = ' ';
+                idx++;
+            }
+        }
+    }
+    
+error_exit:
+    
+    return ret_val;
+}
 
+/*
 char *pl_expandtabs(char *the_string, int tabsize) {
     char *tmp = NULL, *ret_val = NULL;
     int i, tabcount = 0, str_size, idx;
@@ -1358,3 +1430,4 @@ error_exit:
 
     return ret_val;
 }
+*/
