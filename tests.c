@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <execinfo.h>
+
 
 
 #define KRED    "\x1B[31m"
@@ -1174,17 +1174,17 @@ void test_count_empty_params() {
 void test_expandtabs() {
     char *ret_val;
 
-    ret_val = pl_expandtabs("this is a\ttabbed\t\tstring", 2);
+    ret_val = pl_expandtabs("this is a\ttabbed\t\tstring", 4);
     assert_equal_str(
-                "this is a  tabbed    string",
+                "this is a   tabbed      string",
                 ret_val,
                 "test_expandtabs",
                 "Test 1: Strings are not equal."
             );
 
-    ret_val = pl_expandtabs("\t", 10);
+    ret_val = pl_expandtabs("'\t'", 10);
     assert_equal_str(
-                "          ",
+                "'         '",
                 ret_val,
                 "test_expandtabs",
                 "Test 2: Strings are not equal."

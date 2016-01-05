@@ -1268,17 +1268,29 @@ int pl_count(char * the_string, char *word) {
 }
 
 
+static int next_column(int position, int tabsize) {
+    if (tabsize == 0) {
+        return 0;
+    }
+
+    return tabsize - (position % tabsize);
+}
+
+
 /**
  * @brief This function replaces tabs with spaces.
  *
- * The tabs are replaced with the number of spaces in specified in the
- * \a tabsize parameter. There is no default value for the tabsize, so a value
- * needs to be passed. The resulting string is put in a heap allocated buffer,
- * the buffer should be freed after use.
+ * The tabs are replaced with spaces ' ' up to the next column. The column width
+ * is specified by the \a tabsize parameter, and the number of spaces inserted 
+ * for each tab is the number of spaces needed to reach the next multiple of 
+ * tabsize. The returned string is allocated on the heap, remember to free this
+ * resource after use. NULL is returned in the follwoing cases: The passed string
+ * points to NULL. \a tabsize has a negative value. Or the string has a length of
+ * zero.
  *
  * @param the_string The string with tabs.
  *
- * @param tabsize The number of spaces you want to replace each tab with.
+ * @param tabsize The width of the column.
  *
  * @return The function returns a heap allocated buffer of the string with tabs
  * replaced. If the function fails \b NULL is returned.
@@ -1311,7 +1323,58 @@ tabs    instead of      space
 tabs instead of space
 \endcode
  */
+char *pl_expandtabs(char *the_string, int tabsize) {
+    char *ret_val = NULL;
+    if (the_string == NULL || tabsize < 0) {
+        goto error_exit;
+    }
+    
+    int str_len = strlen(the_string);
+    
+    if (str_len == 0) {
+        goto error_exit;
+    }
+    
+    int extra_size = 0;
+    
+    for (int i = 0; i < str_len; i++) {
+        if (the_string[i] == '\t') {
+            if (tabsize != 0) {
+                extra_size += i % tabsize;
+            }
+            
+            else {
+                extra_size--; // Save a byte!
+            }
+        }
+    }
+    
+    ret_val = (char *) calloc(str_len + extra_size + 1, sizeof(char));
+    if (ret_val == NULL) {
+        goto error_exit;
+    }
+    
+    for (int i = 0, idx = 0; i < str_len; i++) {
+        if (the_string[i] != '\t') {
+            ret_val[idx] = the_string[i];
+            idx++;
+        }
+        
+        else {
+            int spaces = next_column(idx, tabsize);
+            for (int x = 0; x < spaces; x++) {
+                ret_val[idx] = ' ';
+                idx++;
+            }
+        }
+    }
+    
+error_exit:
+    
+    return ret_val;
+}
 
+/*
 char *pl_expandtabs(char *the_string, int tabsize) {
     char *tmp = NULL, *ret_val = NULL;
     int i, tabcount = 0, str_size, idx;
@@ -1369,3 +1432,4 @@ error_exit:
 
     return ret_val;
 }
+*/
