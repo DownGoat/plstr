@@ -40,7 +40,7 @@ char    **pl_split(char *, char *, int *);
 int     pl_startswith(char *, char *);
 int     pl_endswith(char *, char *);
 char    *pl_strip(char *, char *);
-char    *pl_translate(char *, char *, char *);
+char    *pl_translate(char *, unsigned char *, char *);
 char    **pl_splitlines(char *, int , int *);
 int     pl_count(char *, char *);
 char    *pl_expandtabs(char *, int);

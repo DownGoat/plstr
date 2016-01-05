@@ -919,7 +919,7 @@ void test_translate() {
                 "Test 1: Strings are not equal."
             );
 
-    ret_val = pl_translate("read this short text", "aeiou", "xxxxx");
+    ret_val = pl_translate("read this short text", (unsigned char *) "aeiou", "xxxxx");
     assert_equal_str(
                 "rxxd thxs shxrt txxt",
                 ret_val,
@@ -927,7 +927,7 @@ void test_translate() {
                 "Test 2: Strings are not equal."
             );
 
-    ret_val = pl_translate("read this short text", "zzzzz", "aeiou");
+    ret_val = pl_translate("read this short text", (unsigned char *) "zzzzz", "aeiou");
     assert_equal_str(
                 "read this short text",
                 ret_val,
@@ -940,7 +940,7 @@ void test_translate() {
 void test_translate_empty_params() {
     char *ret_val;
 
-    ret_val = pl_translate("", "123", "321");
+    ret_val = pl_translate("", (unsigned char *) "123", "321");
     assert_equal_pointers(
                 NULL,
                 ret_val,
@@ -948,7 +948,7 @@ void test_translate_empty_params() {
                 "Test 1: NULL not returned."
             );
 
-    ret_val = pl_translate(NULL, "123", "321");
+    ret_val = pl_translate(NULL, (unsigned char *) "123", "321");
     assert_equal_pointers(
                 NULL,
                 ret_val,
@@ -956,7 +956,7 @@ void test_translate_empty_params() {
                 "Test 2: NULL not returned."
             );
 
-    ret_val = pl_translate("spam eggs and ham", "", "321");
+    ret_val = pl_translate("spam eggs and ham", (unsigned char *) "", "321");
     assert_equal_pointers(
                 NULL,
                 ret_val,
@@ -964,7 +964,7 @@ void test_translate_empty_params() {
                 "Test 3: NULL not returned."
             );
 
-    ret_val = pl_translate("spam eggs and ham", "ega", "");
+    ret_val = pl_translate("spam eggs and ham", (unsigned char *) "ega", "");
     assert_equal_pointers(
                 NULL,
                 ret_val,
@@ -972,7 +972,7 @@ void test_translate_empty_params() {
                 "Test 4: NULL not returned."
             );
 
-    ret_val = pl_translate("spam eggs and ham", "ega", NULL);
+    ret_val = pl_translate("spam eggs and ham", (unsigned char *) "ega", NULL);
     assert_equal_pointers(
                 NULL,
                 ret_val,
@@ -980,7 +980,7 @@ void test_translate_empty_params() {
                 "Test 5: NULL not returned."
             );
 
-    ret_val = pl_translate("", "", "");
+    ret_val = pl_translate("", (unsigned char *) "", "");
     assert_equal_pointers(
                 NULL,
                 ret_val,

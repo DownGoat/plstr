@@ -904,7 +904,7 @@ static char *translate_no_table(char *string, char *deletechars) {
  * cases where the table parameter is not empty. Do not call this function
  * directly, call pl_translate instead.
  */
-static char *translate_with_table(char *string, char *table, char *deletechars) {
+static char *translate_with_table(char *string, unsigned char *table, char *deletechars) {
     char *tmp = NULL, *ret_val = NULL;
     char swap_table[256];
     int i;
@@ -913,11 +913,13 @@ static char *translate_with_table(char *string, char *table, char *deletechars) 
         goto error_exit;
     }
 
-    if (strlen(string) == 0 || strlen(table) == 0 || strlen(deletechars) == 0) {
+    int table_size = strlen((char *) table);
+
+    if (strlen(string) == 0 || table_size == 0 || strlen(deletechars) == 0) {
         goto error_exit;
     }
 
-    if (strlen(table) != strlen(deletechars)) {
+    if (table_size != strlen(deletechars)) {
         goto error_exit;
     }
 
@@ -925,7 +927,7 @@ static char *translate_with_table(char *string, char *table, char *deletechars) 
         swap_table[i] = i;
     }
 
-    for (i = 0; i < strlen(table); i++) {
+    for (i = 0; i < table_size; i++) {
         swap_table[(int) table[i]] = deletechars[i];
     }
 
@@ -1017,7 +1019,7 @@ no table:rd ths shrt txt
 with table: rxxd thxs shxrt txxt
 \endcode
  */
-char *pl_translate(char *string, char *table, char *deletechars) {
+char *pl_translate(char *string, unsigned char *table, char *deletechars) {
     if (string == NULL || deletechars == NULL) {
         return NULL;
     }
@@ -1026,7 +1028,7 @@ char *pl_translate(char *string, char *table, char *deletechars) {
         return NULL;
     }
 
-    if (table != NULL && strlen(table) == 0) {
+    if (table != NULL && strlen((char *) table) == 0) {
         return NULL;
     }
 
@@ -1121,22 +1123,19 @@ int main() {
 \endcode
  */
 char **pl_splitlines(char *the_string, int keepends, int *size) {
-    char **ret_val = NULL, *pch = NULL, *tmp = NULL;
-    int delims = 0, i, idx = 0;
-    int string_length = 0;
-
     if (the_string == NULL) {
-        goto error_exit;
+        return NULL;
     }
 
-    string_length = strlen(the_string);
+    int string_length = strlen(the_string);
 
     if (string_length == 0) {
-        goto error_exit;
+        return NULL;
     }
 
     // Count the number of lines.
-    for (i = 0; i < string_length; i++) {
+    int delims = 0;
+    for (int i = 0; i < string_length; i++) {
         // 10 and 13 is the int value of \n and \r
         if ((int) the_string[i] == '\n' || (int) the_string[i] == '\r') {
             delims++;
@@ -1145,8 +1144,10 @@ char **pl_splitlines(char *the_string, int keepends, int *size) {
 
     // Nothing todo.
     if (delims == 0) {
-        goto error_exit;
+        return NULL;
     }
+
+    char **ret_val = NULL, *pch = NULL, *tmp = NULL;
 
     ret_val = (char **) calloc(delims + 1, sizeof(char *));
     if (ret_val == NULL) {
@@ -1155,7 +1156,8 @@ char **pl_splitlines(char *the_string, int keepends, int *size) {
 
 
     pch = the_string;
-    for (i = 0; i < string_length; i++) {
+    int idx = 0;
+    for (int i = 0; i < string_length; i++) {
         if ((int) the_string[i] == '\n' || (int) the_string[i] == '\r') {
             int len = (the_string + i) - pch;
 
@@ -1189,7 +1191,7 @@ char **pl_splitlines(char *the_string, int keepends, int *size) {
 
 error_exit:
     if (delims) {
-        for (i = 0; i < delims; i++) {
+        for (int i = 0; i < delims; i++) {
             free(ret_val[i]);
         }
     }
