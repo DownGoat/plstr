@@ -107,6 +107,8 @@ void test_slice_positive_sub_str() {
             "test_slice_positive_sub_str",
             "The substring is not equal to the sliced string."
             );
+
+    free(ret_val);
 }
 
 
@@ -122,6 +124,7 @@ void test_slice_negative_offset() {
             "test_slice_negative_offset",
             "Test 1: The ret_val is not empty."
             );
+
 
     ret_val = pl_slice(the_string, -1, 9);
 
@@ -174,6 +177,8 @@ void test_slice_negative_limit() {
                 "Test 1: The strings are not equal"
             );
 
+    free(ret_val);
+
     ret_val = pl_slice(the_string, 1, -10);
 
     assert_equal_str(
@@ -182,6 +187,8 @@ void test_slice_negative_limit() {
                 "test_slice_negative_limit",
                 "Test 2: The strings are not equal"
             );
+
+    free(ret_val);
 
     ret_val = pl_slice(the_string, 9, -10);
 
@@ -200,6 +207,8 @@ void test_slice_negative_limit() {
                 "test_slice_negative_limit",
                 "Test 4: The strings are not equal"
             );
+
+    free(ret_val);
 }
 
 
@@ -230,6 +239,8 @@ void test_slice_both_negative() {
                 "test_slice_both_negative",
                 "Test 1: The function did not return the correct substring."
             );
+
+    free(ret_val);
 
     ret_val = pl_slice(the_string, -5, -5);
 
@@ -314,6 +325,8 @@ void test_strcpy_no_alloc() {
                 "test_strcpy_no_alloc",
                 "The strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -331,6 +344,8 @@ void test_strcpy_pre_alloc() {
                 "test_strcpy_pre_alloc",
                 "The strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -348,6 +363,8 @@ void test_strcpy_not_empty() {
                 "test_strcpy_not_empty",
                 "The strings are not equal"
             );
+
+    free(ret_val);
 }
 
 
@@ -377,6 +394,8 @@ void test_strcat() {
                 "test_strcat",
                 "The strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -393,6 +412,8 @@ void test_strcat_empty_source() {
                 "test_strcat_empty_source",
                 "The strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -409,6 +430,8 @@ void test_strcat_empty_destination() {
                 "test_strcat_empty_destination",
                 "The strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -468,6 +491,10 @@ void test_split() {
                 "test_split",
                 "Test 3: Size is not correct."
             );
+
+    free(ret_val[0]);
+    free(ret_val[1]);
+    free(ret_val);
 }
 
 
@@ -505,6 +532,11 @@ void test_split_multiple_delims() {
                 "test_split_multiple_delims",
                 "Test 4: Size is not correct."
             );
+
+    free(ret_val[0]);
+    free(ret_val[1]);
+    free(ret_val[2]);
+    free(ret_val);
 }
 
 
@@ -588,6 +620,11 @@ void test_split_single_delim() {
                 "test_split_single_delim",
                 "Test 4: Size of the returned array is not right."
             );
+
+    free(ret_val[0]);
+    free(ret_val[1]);
+    free(ret_val[2]);
+    free(ret_val);
 }
 
 
@@ -796,6 +833,8 @@ void test_strip_no_chars() {
                 "Test 1: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_strip(str2, NULL);
     assert_equal_str(
                 "aaabbbccc",
@@ -803,6 +842,8 @@ void test_strip_no_chars() {
                 "test_strip_no_chars",
                 "Test 2: Strings are not equal."
             );
+
+    free(ret_val);
 
     ret_val = pl_strip(str3, NULL);
     assert_equal_str(
@@ -812,6 +853,8 @@ void test_strip_no_chars() {
                 "Test 3: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_strip(str4, NULL);
     assert_equal_str(
                 "aaabbbccc",
@@ -819,6 +862,8 @@ void test_strip_no_chars() {
                 "test_strip_no_chars",
                 "Test 4: Strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -837,6 +882,8 @@ void test_strip_with_chars() {
                 "Test 1: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_strip(str2, "a");
     assert_equal_str(
                 "bbbccc",
@@ -844,6 +891,8 @@ void test_strip_with_chars() {
                 "test_strip_with_chars",
                 "Test 2: Strings are not equal."
             );
+
+    free(ret_val);
 
     ret_val = pl_strip(str3, "a");
     assert_equal_str(
@@ -853,6 +902,8 @@ void test_strip_with_chars() {
                 "Test 3: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_strip(str4, "ad");
     assert_equal_str(
                 "bbbccc",
@@ -860,6 +911,8 @@ void test_strip_with_chars() {
                 "test_strip_with_chars",
                 "Test 4: Strings are not equal."
             );
+
+    free(ret_val);
 }
 
 
@@ -882,6 +935,8 @@ void test_strip_empty_params() {
                 "Test 2: Strings not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_strip("   asd   ", NULL);
     assert_equal_str(
                 "asd",
@@ -889,6 +944,8 @@ void test_strip_empty_params() {
                 "test_strip_empty_params",
                 "Test 3: Strings not equal."
             );
+
+    free(ret_val);
 
     ret_val = pl_strip(NULL, NULL);
     assert_equal_str(
@@ -919,6 +976,8 @@ void test_translate() {
                 "Test 1: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_translate("read this short text", (unsigned char *) "aeiou", "xxxxx");
     assert_equal_str(
                 "rxxd thxs shxrt txxt",
@@ -927,6 +986,8 @@ void test_translate() {
                 "Test 2: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_translate("read this short text", (unsigned char *) "zzzzz", "aeiou");
     assert_equal_str(
                 "read this short text",
@@ -934,6 +995,8 @@ void test_translate() {
                 "test_translate",
                 "Test 3: Strings are not equal"
             );
+
+    free(ret_val);
 }
 
 
@@ -1037,6 +1100,12 @@ void test_splitlines() {
                 "test_splitlines",
                 "Test 5: Size not right;"
             );
+
+    free(ret_val[0]);
+    free(ret_val[1]);
+    free(ret_val[2]);
+    free(ret_val[3]);
+    free(ret_val);
 }
 
 
@@ -1080,6 +1149,12 @@ void test_splitlines_keepends() {
                 "test_splitlines_keepends",
                 "Test 5: Size not right."
             );
+
+    free(ret_val[0]);
+    free(ret_val[1]);
+    free(ret_val[2]);
+    free(ret_val[3]);
+    free(ret_val);
 }
 
 
@@ -1182,6 +1257,8 @@ void test_expandtabs() {
                 "Test 1: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_expandtabs("'\t'", 10);
     assert_equal_str(
                 "'         '",
@@ -1190,6 +1267,8 @@ void test_expandtabs() {
                 "Test 2: Strings are not equal."
             );
 
+    free(ret_val);
+
     ret_val = pl_expandtabs("asd\tdsa", 0);
     assert_equal_str(
                 "asddsa",
@@ -1197,6 +1276,8 @@ void test_expandtabs() {
                 "test_expandtabs",
                 "Test 3: Strings are not equal."
             );
+
+    free(ret_val);
 }
 
 

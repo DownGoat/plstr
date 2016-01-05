@@ -112,26 +112,24 @@ pre_alloc: This is a short string.
 \endcode
  */
 char *pl_cpy(char *source, char *destination) {
-    char *ret_val = NULL, *tmp = destination;
-
+    char *ret_val = destination;
     if (source == NULL) {
         goto error_exit;
     }
 
     if (destination == NULL) {
-        tmp = calloc(strlen(source) + 1, sizeof(char));
-        if (tmp == NULL) {
+        ret_val = calloc(strlen(source) + 1, sizeof(char));
+        if (ret_val == NULL) {
             goto error_exit;
         }
     }
 
-    ret_val = strcpy(tmp, source);
+    ret_val = strcpy(ret_val, source);
 
     return ret_val;
 
 error_exit:
-    free(tmp);
-    return ret_val;
+    return NULL;
 }
 
 
@@ -1340,7 +1338,7 @@ char *pl_expandtabs(char *the_string, int tabsize) {
     for (int i = 0; i < str_len; i++) {
         if (the_string[i] == '\t') {
             if (tabsize != 0) {
-                extra_size += i % tabsize;
+                extra_size += next_column(i, tabsize);
             }
             
             else {
@@ -1348,7 +1346,7 @@ char *pl_expandtabs(char *the_string, int tabsize) {
             }
         }
     }
-    
+
     ret_val = (char *) calloc(str_len + extra_size + 1, sizeof(char));
     if (ret_val == NULL) {
         goto error_exit;
@@ -1368,68 +1366,8 @@ char *pl_expandtabs(char *the_string, int tabsize) {
             }
         }
     }
-    
+
 error_exit:
     
     return ret_val;
 }
-
-/*
-char *pl_expandtabs(char *the_string, int tabsize) {
-    char *tmp = NULL, *ret_val = NULL;
-    int i, tabcount = 0, str_size, idx;
-    int string_length = 0;
-
-    if (the_string == NULL || tabsize < 0) {
-        goto error_exit;
-    }
-
-    string_length = strlen(the_string);
-
-    if (string_length == 0) {
-        goto error_exit;
-    }
-
-    for (i = 0; i < string_length; i++) {
-        // 9 is tab int value.
-        if (the_string[i] == '\t') {
-            tabcount++;
-        }
-    }
-
-    if (!tabcount) {
-        goto error_exit;
-    }
-
-    str_size = (tabcount * tabsize) + string_length + 1;
-    tmp = (char *) calloc(str_size, sizeof(char));
-    if (tmp == NULL) {
-        goto error_exit;
-    }
-
-    idx = 0;
-    for (i = 0; i < string_length; i++) {
-        if (the_string[i] == '\t') {
-            int x;
-            for (x = 0; x < tabsize; x++) {
-                tmp[idx] = ' ';
-                idx++;
-            }
-        }
-
-        else {
-            tmp[idx] = the_string[i];
-            idx++;
-        }
-    }
-
-    ret_val = tmp;
-
-    return ret_val;
-
-error_exit:
-    free(tmp);
-
-    return ret_val;
-}
-*/

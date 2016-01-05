@@ -7,9 +7,9 @@
 
 var indexSectionsWithContent =
 {
-  0: "ipst",
+  0: "ip",
   1: "p",
-  2: "pst",
+  2: "p",
   3: "i"
 };
 
