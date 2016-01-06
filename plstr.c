@@ -189,13 +189,11 @@ sliced 0,-10: subderm
 \endcode
  */
 char *pl_slice(char *source, int offset, int limit) {
-    int source_length = 0;
-
     if (source == NULL) {
         return NULL;
     }
 
-    source_length = strlen(source);
+    int source_length = strlen(source);
 
     if (source_length == 0) {
         return NULL;
@@ -293,32 +291,28 @@ concatenated:foobar
 \endcode
  */
 char *pl_cat(char *destination, char *source) {
-    char *ret_val = NULL, *tmp = NULL;
-
     if (destination == NULL || source == NULL) {
+        return NULL;
+    }
+
+    char *ret_val = (char *) calloc(strlen(source) + strlen(destination) + 1, sizeof(char));
+    if (ret_val == NULL) {
         goto error_exit;
     }
 
-    tmp = (char *) calloc(strlen(source) + strlen(destination) + 1, sizeof(char));
-    if (tmp == NULL) {
+    ret_val = pl_cpy(destination, ret_val);
+    if (ret_val == NULL) {
         goto error_exit;
     }
 
-    tmp = pl_cpy(destination, tmp);
-    if (tmp == NULL) {
-        goto error_exit;
-    }
-
-    strcat(tmp, source);
-
-    ret_val = tmp;
+    strcat(ret_val, source);
 
     return ret_val;
 
 error_exit:
-    free(tmp);
+    free(ret_val);
 
-    return ret_val;
+    return NULL;
 }
 
 
